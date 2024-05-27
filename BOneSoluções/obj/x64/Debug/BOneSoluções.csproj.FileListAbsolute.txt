@@ -1,0 +1,10 @@
+C:\Users\SAPB1DEV\Source\Repos\BOneSoluções\BOneSoluções\bin\x64\Debug\BOneSoluções.exe
+C:\Users\SAPB1DEV\Source\Repos\BOneSoluções\BOneSoluções\bin\x64\Debug\BOneSoluções.pdb
+C:\Users\SAPB1DEV\Source\Repos\BOneSoluções\BOneSoluções\bin\x64\Debug\SAPBusinessOneSDK.dll
+C:\Users\SAPB1DEV\Source\Repos\BOneSoluções\BOneSoluções\obj\x64\Debug\BOneSoluções.Resources.Resource.resources
+C:\Users\SAPB1DEV\Source\Repos\BOneSoluções\BOneSoluções\obj\x64\Debug\BOneSoluções.csproj.GenerateResource.cache
+C:\Users\SAPB1DEV\Source\Repos\BOneSoluções\BOneSoluções\obj\x64\Debug\BOneSoluções.csproj.CoreCompileInputs.cache
+C:\Users\SAPB1DEV\Source\Repos\BOneSoluções\BOneSoluções\obj\x64\Debug\BOneSoluções.csproj.CopyComplete
+C:\Users\SAPB1DEV\Source\Repos\BOneSoluções\BOneSoluções\obj\x64\Debug\BOneSoluções.exe
+C:\Users\SAPB1DEV\Source\Repos\BOneSoluções\BOneSoluções\obj\x64\Debug\BOneSoluções.pdb
+C:\Users\SAPB1DEV\Source\Repos\BOneSoluções\BOneSoluções\obj\x64\Debug\BOneSoluções.csproj.AssemblyReference.cache

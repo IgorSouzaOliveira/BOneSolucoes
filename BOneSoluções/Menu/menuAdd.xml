@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application>
+	<Menus>
+		<action type="add">
+			<Menu Checked="0" Enabled="1" FatherUID="43520" Position="-1" String="BOne Soluções" Type="2" UniqueID="mnu_mainmenu" Image="%path%\Imagens\logo_menu.bmp">
+				<Menus>
+					<action type="add">
+						<Menu Checked="0" Enabled="1" FatherUID="mnu_mainmenu" Position="2" String="Parametrização" Type="1" UniqueID="mnu_mnuParam" />
+					</action>
+				</Menus>
+			</Menu>
+		</action>
+		<action type="add">
+			<Menu Checked="0" Enabled="1" FatherUID="mnu_mainmenu" Position="2" String="Vendas" Type="2" UniqueID="mnuVenda" image="">
+				<Menus>
+					<action type="add">
+						<Menu Checked="0" Enabled="1" FatherUID="mnuVenda" Position="1" String="Assistente de geração de nota fiscal" Type="1" UniqueID="mnuAssisGer" />
+					</action>
+				</Menus>
+			</Menu>
+		</action>
+		<action type="add">
+			<Menu Checked="0" Enabled="1" FatherUID="mnu_mainmenu" Position="3" String="CRM" Type="2" UniqueID="mnuCRM" image="">
+				<Menus>
+					<action type="add">
+						<Menu Checked="0" Enabled="1" FatherUID="mnuVenda" Position="1" String="Ativar/Inativar PN" Type="1" UniqueID="mnuBP" />
+					</action>
+				</Menus>
+			</Menu>
+		</action>k
+	</Menus>
+</Application>
+
