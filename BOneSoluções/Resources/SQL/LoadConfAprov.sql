@@ -1,0 +1,1 @@
+﻿SELECT "U_ObjectType", "U_Query","U_Ativo","Code" FROM [@BONMODAPROV]

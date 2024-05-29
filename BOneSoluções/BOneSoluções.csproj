@@ -71,6 +71,9 @@
     <Compile Include="Forms\Compras\formAprov.b1f.cs">
       <DependentUpon>formAprov.b1f</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Configuração\formConfigAprov.b1f.cs">
+      <DependentUpon>formConfigAprov.b1f</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Configuração\formMain.b1f.cs">
       <DependentUpon>formMain.b1f</DependentUpon>
     </Compile>
@@ -100,6 +103,7 @@
     <Content Include="Menu\menuRemove.xml" />
     <Content Include="Resources\SQL\LoadBP.sql" />
     <Content Include="Resources\SQL\LoadBPFilter.sql" />
+    <Content Include="Resources\SQL\LoadConfAprov.sql" />
     <Content Include="Resources\SQL\LoadConfig.sql" />
     <Content Include="Resources\SQL\LoadPed.sql" />
     <Content Include="Resources\SQL\LoadPedFilter.sql" />
@@ -109,6 +113,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Forms\Compras\formAprov.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Forms\Configuração\formConfigAprov.b1f">
       <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Forms\Configuração\formMain.b1f">

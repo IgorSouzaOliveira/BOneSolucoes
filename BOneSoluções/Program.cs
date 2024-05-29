@@ -1,4 +1,5 @@
-﻿using SAPbouiCOM.Framework;
+﻿using BOneSoluções.Entities;
+using SAPbouiCOM.Framework;
 using System;
 using System.Collections.Generic;
 
@@ -38,7 +39,9 @@ namespace BOneSoluções
 
                 MyMenu.CreateMenu();
 
-                //Application.SBO_Application.ItemEvent += ConfigBP.SBO_Application_ItemEvent;
+                //Application.SBO_Application.ItemEvent += EventClass.SBO_Application_ItemEvent;
+                Application.SBO_Application.FormDataEvent += EventClass.GetDocEntryPed;
+
 
                 oApp.RegisterMenuEventHandler(MyMenu.SBO_Application_MenuEvent);
                 Application.SBO_Application.AppEvent += new SAPbouiCOM._IApplicationEvents_AppEventEventHandler(SBO_Application_AppEvent);

@@ -124,6 +124,9 @@
   <data name="LoadBPFilter" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>sql\loadbpfilter.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="LoadConfAprov" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>sql\loadconfaprov.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="LoadConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>sql\loadconfig.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>

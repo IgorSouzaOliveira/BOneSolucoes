@@ -62,7 +62,8 @@ namespace BOneSoluções.Resources {
         
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT 
-        ///	    CardCode [CardCode]
+        ///		&apos;&apos; [Checked]
+        ///	   ,CardCode [CardCode]
         ///	   ,CardName [CardName]
         ///	   ,GRP.GroupName [GroupName]
         ///	   ,Phone1 [Phone1]
@@ -71,7 +72,7 @@ namespace BOneSoluções.Resources {
         ///	   ,CASE WHEN validFor = &apos;Y&apos; THEN &apos;Ativo&apos; WHEN validFor = &apos;N&apos; THEN &apos;Inativo&apos; END AS [Situacao]
         ///	   
         ///	   FROM OCRD WITH(NOLOCK)
-        ///	   LEFT JOIN OCRG GRP WITH(NOLOCK) ON GRP. [o restante da cadeia de caracteres foi truncado]&quot;;.
+        ///	   LEFT JOIN OCRG GRP WITH [o restante da cadeia de caracteres foi truncado]&quot;;.
         /// </summary>
         internal static string LoadBP {
             get {
@@ -86,17 +87,27 @@ namespace BOneSoluções.Resources {
         ///	 DECLARE @Situacao AS NVARCHAR(54) = &apos;{2}&apos;	
         ///
         ///SELECT 
-        ///	    CardCode [CardCode]
+        ///       &apos;&apos; [Checked]
+        ///	   ,CardCode [CardCode]
         ///	   ,CardName [CardName]
         ///	   ,GRP.GroupName [GroupName]
         ///	   ,Phone1 [Phone1]
         ///	   ,E_Mail [E_Mail]
         ///	   ,(SELECT TOP 1 CONCAT(A.AddrType,&apos; &apos;,A.Street,&apos;, &apos;,A.StreetNo,&apos; - &apos;,A.Block,&apos;, &apos;, B.Name,&apos; - &apos;,A.State) FROM CRD1 A JOIN OCNT B ON B.AbsId = A.County WHERE A.CardCode = OCRD.CardCode) [Endereço] 
-        ///	   ,CASE WHEN validFor = &apos;Y&apos;  [o restante da cadeia de caracteres foi truncado]&quot;;.
+        ///	   ,CASE [o restante da cadeia de caracteres foi truncado]&quot;;.
         /// </summary>
         internal static string LoadBPFilter {
             get {
                 return ResourceManager.GetString("LoadBPFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT &quot;U_ObjectType&quot;, &quot;U_Query&quot;,&quot;U_Ativo&quot; FROM [@BONMODAPROV].
+        /// </summary>
+        internal static string LoadConfAprov {
+            get {
+                return ResourceManager.GetString("LoadConfAprov", resourceCulture);
             }
         }
         

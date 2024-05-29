@@ -30,7 +30,7 @@ namespace BOneSoluções.Entities
                     /*Linha*/
                     for (int i = 0; i < oOrder.Lines.Count; i++)
                     {
-                        oOrder.Lines.SetCurrentLine(i);
+                        oOrder.Lines.SetCurrentLine(i);                        
 
                         oInvoice.Lines.ItemCode = oOrder.Lines.ItemCode;
                         oInvoice.Lines.BaseEntry = oOrder.DocEntry;
@@ -38,6 +38,7 @@ namespace BOneSoluções.Entities
                         oInvoice.Lines.BaseType = (int)SAPbobsCOM.BoObjectTypes.oOrders;
 
                         /*Itens administrado por lote */
+                       
                         oInvoice.Lines.BatchNumbers.ItemCode = oOrder.Lines.BatchNumbers.ItemCode;
                         oInvoice.Lines.BatchNumbers.BatchNumber = oOrder.Lines.BatchNumbers.BatchNumber;
                         oInvoice.Lines.BatchNumbers.Quantity = oOrder.Lines.BatchNumbers.Quantity;
@@ -62,7 +63,7 @@ namespace BOneSoluções.Entities
             }
             catch (Exception ex)
             {
-                Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                Application.SBO_Application.MessageBox(ex.Message);
                 return "";
             }
             finally
