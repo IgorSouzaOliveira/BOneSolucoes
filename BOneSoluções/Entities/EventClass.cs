@@ -11,7 +11,7 @@ namespace BOneSoluções.Entities
 
         public EventClass()
         {
-           
+
         }
         public static void SBO_Application_ItemEvent(string FormUID, ref SAPbouiCOM.ItemEvent pVal, out bool BubbleEvent)
         {
@@ -129,78 +129,102 @@ namespace BOneSoluções.Entities
 
             GC.Collect();
 
-            SAPbobsCOM.Documents oPed = null;
-            oPed = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseOrders);
+            SAPbobsCOM.Documents oDoc = null;
 
-            SAPbobsCOM.Recordset oRst = null;
-            oRst = (SAPbobsCOM.Recordset)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-
-            try
+            if (pVal.ActionSuccess && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_ADD)
             {
-                if (pVal.ActionSuccess && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_ADD && pVal.Type == "22")
+
+                SAPbobsCOM.Recordset oRst = null;
+                oRst = (SAPbobsCOM.Recordset)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                oRst.DoQuery("SELECT 'TRUE' FROM [@BONECONFMAIN] T0 WHERE T0.U_BOne_AtivoAprov = 'Y'");
+
+                if (oRst.RecordCount > 0)
                 {
-                    String docEntry = null;
-                    string xml = $@"{pVal.ObjectKey}";
-                    XmlDocument document = new XmlDocument();
-                    document.LoadXml(xml);
-
-                    if (xml == null)
+                    oRst.DoQuery($@"SELECT T0.""U_BONE_Query"" FROM [@BONMODAPROV] T0 WHERE T0.""U_BOne_Ativo"" = 'Y' AND T0.""U_BONE_ObjectType"" = {pVal.Type}");
+                    if (oRst.RecordCount > 0)
                     {
-                        return;
-                    }
-
-                    XmlNodeList xnList = document.GetElementsByTagName("DocEntry");
-
-                    if (xnList.Count > 0)
-                    {
-                        docEntry = xnList[0].InnerText;
-                    }
-
-                    if (oPed.GetByKey(Convert.ToInt32(docEntry)))
-                    {
-                        oRst.DoQuery($@"SELECT 'TRUE' FROM OPOR T0 WHERE T0.DocEntry = {docEntry} AND T0.CardCode = 'FS000919'");
-
-                        if (oRst.RecordCount > 0)
+                        oRst.MoveFirst();
+                        for (int i = 0; i < oRst.RecordCount; i++)
                         {
-                            oPed.Confirmed = SAPbobsCOM.BoYesNoEnum.tNO;
+                            var query = oRst.Fields.Item("U_BONE_Query").Value;
 
-                            Int32 lRet = oPed.Update();
-                            if (lRet != 0)
+                            String docEntry = null;
+                            string xml = $@"{pVal.ObjectKey}";
+                            XmlDocument document = new XmlDocument();
+                            document.LoadXml(xml);
+
+                            if (xml == null)
                             {
-                                throw new Exception(Program.oCompany.GetLastErrorDescription());
+                                return;
                             }
-                        }
 
+                            XmlNodeList xnList = document.GetElementsByTagName("DocEntry");
+
+                            if (xnList.Count > 0)
+                            {
+                                docEntry = xnList[0].InnerText;
+                            }
+
+                            oRst.DoQuery(query.ToString().Replace("@DocEntry", docEntry));
+
+                            if (oRst.RecordCount > 0)
+                            {
+                                switch (pVal.Type)
+                                {
+                                    case "17":
+                                        oDoc = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oOrders);
+                                        break;
+
+                                    case "22":
+                                        oDoc = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseOrders);
+                                        break;                                
+
+                                    case "540000006":
+                                        oDoc = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseQuotations);
+                                        break;
+                                }
+
+                                try
+                                {
+                                    if (oDoc.GetByKey(Convert.ToInt32(docEntry)))
+                                    {
+                                        oDoc.Confirmed = SAPbobsCOM.BoYesNoEnum.tNO;
+                                        int lRet = oDoc.Update();
+
+                                        if (lRet != 0)
+                                        {
+                                            throw new Exception(Program.oCompany.GetLastErrorDescription());
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                                }
+                            }
+
+                        }
                     }
 
                 }
+            }
+
+        }
+
+        public void InsertTableAprov(int numDoc, string cardCode)
+        {
+            SAPbobsCOM.UserTable oTable = Program.oCompany.UserTables.Item("BONEAPROV");
+
+            try
+            {
+                
 
             }
             catch (Exception ex)
             {
                 Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
             }
-            finally
-            {
-                if (pVal != null)
-                {
-                    System.Runtime.InteropServices.Marshal.ReleaseComObject(pVal);
-                }
-
-                if (oPed != null)
-                {
-                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oPed);
-                }
-
-                if (oRst != null)
-                {
-                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oRst);
-                }
-
-                GC.Collect();
-            }
         }
-
 
     }
 }
