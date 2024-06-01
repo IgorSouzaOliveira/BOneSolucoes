@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.34902.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BOneSoluções", "BOneSoluções\BOneSoluções.csproj", "{1D73F138-3BD4-4530-BEC5-BE4BFC377A78}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BOneSolucoes", "BOneSoluções\BOneSolucoes.csproj", "{1D73F138-3BD4-4530-BEC5-BE4BFC377A78}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

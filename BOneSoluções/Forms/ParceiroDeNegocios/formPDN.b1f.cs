@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BOneSoluções.Forms.ParceiroDeNegocios
+namespace BOneSolucoes.Forms.ParceiroDeNegocios
 {
     [FormAttribute("ParceiroDeNegocios.formPDN", "Forms/ParceiroDeNegocios/formPDN.b1f")]
     class formPDN : UserFormBase

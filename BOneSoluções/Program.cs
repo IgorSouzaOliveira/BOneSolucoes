@@ -1,9 +1,9 @@
-﻿using BOneSoluções.Entities;
+﻿using BOneSolucoes.Entities;
 using SAPbouiCOM.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace BOneSoluções
+namespace BOneSolucoes
 {
     class Program
     {

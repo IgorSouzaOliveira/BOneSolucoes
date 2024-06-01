@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BOneSoluções.Entities
+namespace BOneSolucoes.Entities
 {
     class Invoice
     {

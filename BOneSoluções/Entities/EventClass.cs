@@ -2,7 +2,7 @@
 using System;
 using System.Xml;
 
-namespace BOneSoluções.Entities
+namespace BOneSolucoes.Entities
 {
     class EventClass
     {

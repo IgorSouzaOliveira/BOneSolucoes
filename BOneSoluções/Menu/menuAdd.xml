@@ -27,7 +27,16 @@
 					</action>
 				</Menus>
 			</Menu>
-		</action>k
+		</action>
+		<action type="add">
+			<Menu Checked="0" Enabled="1" FatherUID="mnu_mainmenu" Position="4" String="Aprovação Documentos" Type="2" UniqueID="mnuAprovDoc" image="">
+				<Menus>
+					<action type="add">
+						<Menu Checked="0" Enabled="1" FatherUID="mnuAprovDoc" Position="1" String="Aprovação de Documentos" Type="1" UniqueID="mnuAprovDeDoc" />
+					</action>
+				</Menus>
+			</Menu>
+		</action>
 	</Menus>
 </Application>
 

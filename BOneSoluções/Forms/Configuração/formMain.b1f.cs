@@ -1,11 +1,11 @@
-﻿using BOneSoluções.Forms.Configuração;
+﻿using BOneSolucoes.Forms.Configuração;
 using SAPbouiCOM.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BOneSoluções.Forms
+namespace BOneSolucoes.Forms
 {
     [FormAttribute("formMain", "Forms/Configuração/formMain.b1f")]
     class formMain : UserFormBase

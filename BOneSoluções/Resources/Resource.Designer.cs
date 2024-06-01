@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BOneSoluções.Resources {
+namespace BOneSolucoes.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace BOneSoluções.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BOneSoluções.Resources.Resource", typeof(Resource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BOneSolucoes.Resources.Resource", typeof(Resource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -103,7 +103,7 @@ namespace BOneSoluções.Resources {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT &quot;U_ObjectType&quot;, &quot;U_Query&quot;,&quot;U_Ativo&quot; FROM [@BONMODAPROV].
+        ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT T0.&quot;Code&quot;,T0.&quot;U_BONE_ObjectType&quot;, T0.&quot;U_BONE_NomeConsulta&quot;, T0.&quot;U_BONE_Query&quot;,T0.&quot;U_BONE_CodeEtapa&quot;, T0.&quot;U_BOne_EtapaAut&quot;, T0.&quot;U_BOne_Ativo&quot; FROM [@BONMODAPROV] T0.
         /// </summary>
         internal static string LoadConfAprov {
             get {

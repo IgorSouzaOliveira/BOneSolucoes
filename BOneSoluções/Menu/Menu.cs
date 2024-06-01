@@ -1,10 +1,11 @@
-﻿using BOneSoluções.Forms;
-using BOneSoluções.Forms.ParceiroDeNegocios;
-using BOneSoluções.Forms.Vendas;
+﻿using BOneSolucoes.Forms;
+using BOneSolucoes.Forms.Compras;
+using BOneSolucoes.Forms.ParceiroDeNegocios;
+using BOneSolucoes.Forms.Vendas;
 using SAPbouiCOM.Framework;
 using System;
 
-namespace BOneSoluções
+namespace BOneSolucoes
 {
     class Menu
     {
@@ -62,6 +63,12 @@ namespace BOneSoluções
                 {
                     formPDN formPDN = new formPDN();
                     formPDN.Show();
+                }
+
+                if (pVal.BeforeAction && pVal.MenuUID == "mnuAprovDeDoc")
+                {
+                    formAprov formAprov = new formAprov();
+                    formAprov.Show();
                 }
             }
             catch (Exception ex)
