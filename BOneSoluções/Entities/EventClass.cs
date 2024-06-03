@@ -140,13 +140,14 @@ namespace BOneSolucoes.Entities
 
                 if (oRst.RecordCount > 0)
                 {
-                    oRst.DoQuery($@"SELECT T0.""U_BONE_Query"" FROM [@BONMODAPROV] T0 WHERE T0.""U_BOne_Ativo"" = 'Y' AND T0.""U_BONE_ObjectType"" = {pVal.Type}");
+                    oRst.DoQuery($@"SELECT T0.""U_BONE_Query"",""U_BOne_CodeEtapa"" FROM [@BONMODAPROV] T0 WHERE T0.""U_BOne_Ativo"" = 'Y' AND T0.""U_BONE_ObjectType"" = {pVal.Type}");
                     if (oRst.RecordCount > 0)
                     {
                         oRst.MoveFirst();
                         for (int i = 0; i < oRst.RecordCount; i++)
                         {
                             var query = oRst.Fields.Item("U_BONE_Query").Value;
+                            int codeEtapa = (int)oRst.Fields.Item("U_BOne_CodeEtapa").Value;                            
 
                             String docEntry = null;
                             string xml = $@"{pVal.ObjectKey}";
@@ -177,7 +178,7 @@ namespace BOneSolucoes.Entities
 
                                     case "22":
                                         oDoc = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseOrders);
-                                        break;                                
+                                        break;
 
                                     case "540000006":
                                         oDoc = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseQuotations);
@@ -195,15 +196,18 @@ namespace BOneSolucoes.Entities
                                         {
                                             throw new Exception(Program.oCompany.GetLastErrorDescription());
                                         }
+
+                                        InsertTableAprov(pVal.Type, Convert.ToInt32(docEntry), oDoc.CardCode, oDoc.CardName, oDoc.BPL_IDAssignedToInvoice, oDoc.BPLName, oDoc.SalesPersonCode, oDoc.UserSign,
+                                            oDoc.PaymentGroupCode, oDoc.PaymentMethod,oDoc.DocTotal, codeEtapa, "FALSE");
                                     }
                                 }
                                 catch (Exception ex)
                                 {
                                     Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
                                 }
-                            }
-
+                            }                            
                         }
+                        
                     }
 
                 }
@@ -211,18 +215,46 @@ namespace BOneSolucoes.Entities
 
         }
 
-        public void InsertTableAprov(int numDoc, string cardCode)
+        /* Metodo para adicionar na tabela de aprovação*/
+        public static void InsertTableAprov(string tipoDoc, int numDoc, string cardCode, string cardName, int bplID, string bplName, int salesPersonCode, int userSign,
+            int paymentCode,string paymentMethod,double docTotal, int codigoEtapa, string autorizado)
         {
             SAPbobsCOM.UserTable oTable = Program.oCompany.UserTables.Item("BONEAPROV");
 
             try
             {
-                
+                oTable.UserFields.Fields.Item("U_BOneTipoDoc").Value = tipoDoc;
+                oTable.UserFields.Fields.Item("U_BOneNumDoc").Value = numDoc;
+                oTable.UserFields.Fields.Item("U_BOneCardCode").Value = cardCode;
+                oTable.UserFields.Fields.Item("U_BOneCardName").Value = cardName;
+                oTable.UserFields.Fields.Item("U_BOneBplID").Value = bplID;
+                oTable.UserFields.Fields.Item("U_BOneBplName").Value = bplName;
+                oTable.UserFields.Fields.Item("U_BOneSlpCode").Value = salesPersonCode;
+                oTable.UserFields.Fields.Item("U_BOneUserSign").Value = userSign;
+                oTable.UserFields.Fields.Item("U_BOnePaymentCode").Value = paymentCode;
+                oTable.UserFields.Fields.Item("U_BOnePaymentMethod").Value = paymentMethod;
+                oTable.UserFields.Fields.Item("U_BOneDocTotal").Value = docTotal;
+                oTable.UserFields.Fields.Item("U_BOneCodEtapa").Value = codigoEtapa;
+                oTable.UserFields.Fields.Item("U_BOneAutorizado").Value = autorizado;
+
+                int lRet = oTable.Add();
+
+                if (lRet != 0)
+                {
+                    throw new Exception(Program.oCompany.GetLastErrorDescription());
+                }
 
             }
             catch (Exception ex)
             {
                 Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+            finally
+            {
+                if (oTable != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oTable);
+                }
             }
         }
 

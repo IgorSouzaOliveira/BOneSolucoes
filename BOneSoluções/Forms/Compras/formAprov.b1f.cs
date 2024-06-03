@@ -9,6 +9,25 @@ namespace BOneSolucoes.Forms.Compras
     [FormAttribute("BOneSoluções.Forms.Compras.formAprov", "Forms/Compras/formAprov.b1f")]
     class formAprov : UserFormBase
     {
+
+        private SAPbouiCOM.Button Button0;
+        private SAPbouiCOM.Button Button1;
+        private SAPbouiCOM.StaticText StaticText0;
+        private SAPbouiCOM.EditText EditText0;
+        private SAPbouiCOM.StaticText StaticText1;
+        private SAPbouiCOM.EditText EditText1;
+        private SAPbouiCOM.StaticText StaticText2;
+        private SAPbouiCOM.EditText EditText2;
+        private SAPbouiCOM.StaticText StaticText3;
+        private SAPbouiCOM.ComboBox cVendComp;
+        private SAPbouiCOM.StaticText StaticText4;
+        private SAPbouiCOM.ComboBox cFilial;
+        private SAPbouiCOM.StaticText StaticText5;
+        private SAPbouiCOM.ComboBox ComboBox2;
+        private SAPbouiCOM.Button bFiltrar;
+        private SAPbouiCOM.Matrix Matrix0;
+        SAPbobsCOM.Recordset oRst = null;
+
         public formAprov()
         {
         }
@@ -28,11 +47,12 @@ namespace BOneSolucoes.Forms.Compras
             this.StaticText2 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_7").Specific));
             this.EditText2 = ((SAPbouiCOM.EditText)(this.GetItem("eDataAte").Specific));
             this.StaticText3 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_9").Specific));
-            this.ComboBox0 = ((SAPbouiCOM.ComboBox)(this.GetItem("cVendComp").Specific));
+            this.cVendComp = ((SAPbouiCOM.ComboBox)(this.GetItem("cVendComp").Specific));
             this.StaticText4 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_12").Specific));
-            this.ComboBox1 = ((SAPbouiCOM.ComboBox)(this.GetItem("cFilial").Specific));
+            this.cFilial = ((SAPbouiCOM.ComboBox)(this.GetItem("cFilial").Specific));
             this.StaticText5 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_14").Specific));
             this.ComboBox2 = ((SAPbouiCOM.ComboBox)(this.GetItem("cTipDoc").Specific));
+            this.bFiltrar = ((SAPbouiCOM.Button)(this.GetItem("bFiltrar").Specific));
             this.OnCustomInitialize();
 
         }
@@ -44,26 +64,83 @@ namespace BOneSolucoes.Forms.Compras
         {
         }
 
-        private SAPbouiCOM.Matrix Matrix0;
+        
 
         private void OnCustomInitialize()
         {
+            LoadVendComp();
+            LoadFilial();
+        }
+
+        /*Metodo para carregar os Compradores e Vendedores*/
+        private void LoadVendComp()
+        {
+            oRst = (SAPbobsCOM.Recordset)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+            try
+            {
+                oRst.DoQuery(@"SELECT T0.""SlpCode"", T0.""SlpName"" FROM OSLP T0 WHERE T0.""Active"" = 'Y'");
+
+                if (oRst.RecordCount > 0)
+                {
+                    oRst.MoveFirst();
+                    for (int i = 0; i < oRst.RecordCount; i++)
+                    {
+                        cVendComp.ValidValues.Add(oRst.Fields.Item("SlpCode").Value.ToString(), oRst.Fields.Item("SlpName").Value.ToString());
+                        oRst.MoveNext();
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+            finally
+            {
+                if (oRst != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oRst);
+                }
+            }
+        }
+
+        /*Metodo para carregar a Filial*/
+        private void LoadFilial()
+        {
+            oRst = (SAPbobsCOM.Recordset)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+            try
+            {
+                oRst.DoQuery(@"SELECT T0.""BPLId"", T0.""BPLName"" FROM OBPL T0 WHERE T0.""Disabled"" = 'N'");
+
+                if (oRst.RecordCount > 0)
+                {
+                    oRst.MoveFirst();
+                    for (int i = 0; i < oRst.RecordCount; i++)
+                    {
+                        cFilial.ValidValues.Add(oRst.Fields.Item("BPLId").Value.ToString(), oRst.Fields.Item("BPLName").Value.ToString());
+                        oRst.MoveNext();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+            finally
+            {
+                if (oRst != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oRst);
+                }
+            }
+
 
         }
 
-        private SAPbouiCOM.Button Button0;
-        private SAPbouiCOM.Button Button1;
-        private SAPbouiCOM.StaticText StaticText0;
-        private SAPbouiCOM.EditText EditText0;
-        private SAPbouiCOM.StaticText StaticText1;
-        private SAPbouiCOM.EditText EditText1;
-        private SAPbouiCOM.StaticText StaticText2;
-        private SAPbouiCOM.EditText EditText2;
-        private SAPbouiCOM.StaticText StaticText3;
-        private SAPbouiCOM.ComboBox ComboBox0;
-        private SAPbouiCOM.StaticText StaticText4;
-        private SAPbouiCOM.ComboBox ComboBox1;
-        private SAPbouiCOM.StaticText StaticText5;
-        private SAPbouiCOM.ComboBox ComboBox2;
+        
     }
 }
