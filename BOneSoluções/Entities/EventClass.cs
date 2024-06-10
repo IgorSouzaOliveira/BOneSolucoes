@@ -129,95 +129,139 @@ namespace BOneSolucoes.Entities
 
             GC.Collect();
 
-            SAPbobsCOM.Documents oDoc = null;
-
             if (pVal.ActionSuccess && pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_ADD)
             {
-
                 SAPbobsCOM.Recordset oRst = null;
+
+                try
+                {
+
+                    oRst = (SAPbobsCOM.Recordset)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                    oRst.DoQuery("SELECT 'TRUE' FROM [@BONECONFMAIN] T0 WHERE T0.U_BOne_AtivoAprov = 'Y'");
+
+                    if (oRst.RecordCount > 0)
+                    {
+
+                        oRst.DoQuery($@"SELECT T0.""U_BONE_Query"",""U_BOne_CodeEtapa"",T0.""U_BOne_EtapaAut"", T0.""U_BOne_NomeConsulta"" FROM [@BONMODAPROV] T0 WHERE T0.""U_BOne_Ativo"" = 'Y' AND T0.""U_BONE_ObjectType"" = {pVal.Type}");
+                        if (oRst.RecordCount > 0)
+                        {
+                            oRst.MoveFirst();
+                            for (int i = 0; i < oRst.RecordCount; i++)
+                            {
+                                var query = oRst.Fields.Item("U_BONE_Query").Value.ToString();
+                                int codeEtapa = (int)oRst.Fields.Item("U_BOne_CodeEtapa").Value;
+                                var nameEtapa = oRst.Fields.Item("U_BOne_EtapaAut").Value.ToString();
+                                var modeloAut = oRst.Fields.Item("U_BOne_NomeConsulta").Value.ToString();
+                                
+                                ModelAprov(pVal.Type, pVal.ObjectKey, query, codeEtapa, nameEtapa, modeloAut);
+                                
+                                oRst.MoveNext();
+                            }
+
+                        }
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                }
+                finally
+                {
+                    if (oRst != null)
+                    {
+                        System.Runtime.InteropServices.Marshal.ReleaseComObject(oRst);
+                    }
+                }
+            }
+        }
+
+        /* Metodo para modificar o status do Documento*/
+        public static void ModelAprov(string pvalType, string objectKey, string query, int codeEtapa, string nameEtapa, string modeloAut)
+        {
+            SAPbobsCOM.Documents oDoc = null;
+            SAPbobsCOM.Recordset oRst = null;
+
+            try
+            {
+                String docEntry = null;
+                string xml = $@"{objectKey}";
+                XmlDocument document = new XmlDocument();
+                document.LoadXml(xml);
+
+                if (xml == null)
+                    return;
+
+                XmlNodeList xnList = document.GetElementsByTagName("DocEntry");
+
+                if (xnList.Count > 0)
+                {
+                    docEntry = xnList[0].InnerText;
+                }
+
                 oRst = (SAPbobsCOM.Recordset)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-                oRst.DoQuery("SELECT 'TRUE' FROM [@BONECONFMAIN] T0 WHERE T0.U_BOne_AtivoAprov = 'Y'");
+                oRst.DoQuery(query.ToString().Replace("@DocEntry", docEntry));
 
                 if (oRst.RecordCount > 0)
                 {
-                    oRst.DoQuery($@"SELECT T0.""U_BONE_Query"",""U_BOne_CodeEtapa"" FROM [@BONMODAPROV] T0 WHERE T0.""U_BOne_Ativo"" = 'Y' AND T0.""U_BONE_ObjectType"" = {pVal.Type}");
-                    if (oRst.RecordCount > 0)
+                    oRst.MoveFirst();
+                    for (int i = 0; i < oRst.RecordCount; i++)
                     {
-                        oRst.MoveFirst();
-                        for (int i = 0; i < oRst.RecordCount; i++)
+                        switch (pvalType)
                         {
-                            var query = oRst.Fields.Item("U_BONE_Query").Value;
-                            int codeEtapa = (int)oRst.Fields.Item("U_BOne_CodeEtapa").Value;                            
+                            case "17":
+                                oDoc = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oOrders);
+                                break;
 
-                            String docEntry = null;
-                            string xml = $@"{pVal.ObjectKey}";
-                            XmlDocument document = new XmlDocument();
-                            document.LoadXml(xml);
+                            case "22":
+                                oDoc = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseOrders);
+                                break;
 
-                            if (xml == null)
-                            {
-                                return;
-                            }
-
-                            XmlNodeList xnList = document.GetElementsByTagName("DocEntry");
-
-                            if (xnList.Count > 0)
-                            {
-                                docEntry = xnList[0].InnerText;
-                            }
-
-                            oRst.DoQuery(query.ToString().Replace("@DocEntry", docEntry));
-
-                            if (oRst.RecordCount > 0)
-                            {
-                                switch (pVal.Type)
-                                {
-                                    case "17":
-                                        oDoc = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oOrders);
-                                        break;
-
-                                    case "22":
-                                        oDoc = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseOrders);
-                                        break;
-
-                                    case "540000006":
-                                        oDoc = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseQuotations);
-                                        break;
-                                }
-
-                                try
-                                {
-                                    if (oDoc.GetByKey(Convert.ToInt32(docEntry)))
-                                    {
-                                        oDoc.Confirmed = SAPbobsCOM.BoYesNoEnum.tNO;
-                                        int lRet = oDoc.Update();
-
-                                        if (lRet != 0)
-                                        {
-                                            throw new Exception(Program.oCompany.GetLastErrorDescription());
-                                        }
-
-                                        InsertTableAprov(pVal.Type, Convert.ToInt32(docEntry), oDoc.CardCode, oDoc.CardName, oDoc.BPL_IDAssignedToInvoice, oDoc.BPLName, oDoc.SalesPersonCode, oDoc.UserSign,
-                                            oDoc.PaymentGroupCode, oDoc.PaymentMethod,oDoc.DocTotal, codeEtapa, "FALSE");
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
-                                }
-                            }                            
+                            case "540000006":
+                                oDoc = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseQuotations);
+                                break;
                         }
-                        
-                    }
 
+
+                        if (oDoc.GetByKey(Convert.ToInt32(docEntry)))
+                        {
+                            oDoc.Confirmed = SAPbobsCOM.BoYesNoEnum.tNO;
+                            int lRet = oDoc.Update();
+
+                            if (lRet != 0)
+                            {
+                                throw new Exception(Program.oCompany.GetLastErrorDescription());
+                            }
+
+                            InsertTableAprov(pvalType, Convert.ToInt32(docEntry), oDoc.CardCode, oDoc.CardName, oDoc.BPL_IDAssignedToInvoice, oDoc.BPLName, oDoc.SalesPersonCode, oDoc.UserSign,
+                                oDoc.PaymentGroupCode, oDoc.PaymentMethod, oDoc.DocTotal, codeEtapa, nameEtapa, modeloAut, query, "FALSE"); ;
+                        }
+
+                        oRst.MoveNext();
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+            finally
+            {
+                if (oDoc != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oDoc);
+                }
+                if (oRst != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oRst);
+                }
 
+                GC.Collect();
+            }
         }
 
         /* Metodo para adicionar na tabela de aprovação*/
-        public static void InsertTableAprov(string tipoDoc, int numDoc, string cardCode, string cardName, int bplID, string bplName, int salesPersonCode, int userSign,
-            int paymentCode,string paymentMethod,double docTotal, int codigoEtapa, string autorizado)
+        public static void InsertTableAprov(string tipoDoc, int numDoc, string cardCode, string cardName, int bplID, string bplName, int salesPersonCode, int userSign, int paymentCode, string paymentMethod, double docTotal, int codigoEtapa, string nomeEtapa, string modeloAut, string queryAut, string autorizado)
         {
             SAPbobsCOM.UserTable oTable = Program.oCompany.UserTables.Item("BONEAPROV");
 
@@ -235,6 +279,9 @@ namespace BOneSolucoes.Entities
                 oTable.UserFields.Fields.Item("U_BOnePaymentMethod").Value = paymentMethod;
                 oTable.UserFields.Fields.Item("U_BOneDocTotal").Value = docTotal;
                 oTable.UserFields.Fields.Item("U_BOneCodEtapa").Value = codigoEtapa;
+                oTable.UserFields.Fields.Item("U_BOneNameEtapa").Value = nomeEtapa;
+                oTable.UserFields.Fields.Item("U_BOneModeloAut").Value = modeloAut;
+                oTable.UserFields.Fields.Item("U_BOneQueryAut").Value = queryAut;
                 oTable.UserFields.Fields.Item("U_BOneAutorizado").Value = autorizado;
 
                 int lRet = oTable.Add();
@@ -255,6 +302,8 @@ namespace BOneSolucoes.Entities
                 {
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(oTable);
                 }
+
+                GC.Collect();
             }
         }
 
