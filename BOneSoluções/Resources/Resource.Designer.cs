@@ -61,6 +61,15 @@ namespace BOneSolucoes.Resources {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a EXEC [BONE_ExecAprov] @UserAprov  = &apos;{0}&apos;.
+        /// </summary>
+        internal static string BONE_ExecAprov {
+            get {
+                return ResourceManager.GetString("BONE_ExecAprov", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT 
         ///		&apos;&apos; [Checked]
         ///	   ,CardCode [CardCode]

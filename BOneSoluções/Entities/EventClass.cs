@@ -233,8 +233,8 @@ namespace BOneSolucoes.Entities
                                 throw new Exception(Program.oCompany.GetLastErrorDescription());
                             }
 
-                            InsertTableAprov(pvalType, Convert.ToInt32(docEntry), oDoc.CardCode, oDoc.CardName, oDoc.BPL_IDAssignedToInvoice, oDoc.BPLName, oDoc.SalesPersonCode, oDoc.UserSign,
-                                oDoc.PaymentGroupCode, oDoc.PaymentMethod, oDoc.DocTotal, codeEtapa, nameEtapa, modeloAut, query, "FALSE"); ;
+                            InsertTableAprov(pvalType,docEntry, oDoc.CardCode, oDoc.CardName, oDoc.BPL_IDAssignedToInvoice, oDoc.BPLName, oDoc.SalesPersonCode, oDoc.UserSign,
+                                oDoc.PaymentGroupCode, oDoc.PaymentMethod, oDoc.DocTotal, codeEtapa, nameEtapa, modeloAut, query, "FALSE", 0); ;
                         }
 
                         oRst.MoveNext();
@@ -261,7 +261,7 @@ namespace BOneSolucoes.Entities
         }
 
         /* Metodo para adicionar na tabela de aprovação*/
-        public static void InsertTableAprov(string tipoDoc, int numDoc, string cardCode, string cardName, int bplID, string bplName, int salesPersonCode, int userSign, int paymentCode, string paymentMethod, double docTotal, int codigoEtapa, string nomeEtapa, string modeloAut, string queryAut, string autorizado)
+        public static void InsertTableAprov(string tipoDoc, string numDoc, string cardCode, string cardName, int bplID, string bplName, int salesPersonCode, int userSign, int paymentCode, string paymentMethod, double docTotal, int codigoEtapa, string nomeEtapa, string modeloAut, string queryAut, string autorizado, int processado)
         {
             SAPbobsCOM.UserTable oTable = Program.oCompany.UserTables.Item("BONEAPROV");
 
@@ -283,6 +283,7 @@ namespace BOneSolucoes.Entities
                 oTable.UserFields.Fields.Item("U_BOneModeloAut").Value = modeloAut;
                 oTable.UserFields.Fields.Item("U_BOneQueryAut").Value = queryAut;
                 oTable.UserFields.Fields.Item("U_BOneAutorizado").Value = autorizado;
+                oTable.UserFields.Fields.Item("U_BOneProcessado").Value = processado;
 
                 int lRet = oTable.Add();
 

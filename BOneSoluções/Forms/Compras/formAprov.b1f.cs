@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BOneSolucoes.Forms.Compras
 {
-    [FormAttribute("BOneSoluções.Forms.Compras.formAprov", "Forms/Compras/formAprov.b1f")]
+    [FormAttribute("formAprov", "Forms/Compras/formAprov.b1f")]
     class formAprov : UserFormBase
     {
 
@@ -25,7 +25,7 @@ namespace BOneSolucoes.Forms.Compras
         private SAPbouiCOM.StaticText StaticText5;
         private SAPbouiCOM.ComboBox ComboBox2;
         private SAPbouiCOM.Button bFiltrar;
-        private SAPbouiCOM.Matrix Matrix0;
+        private SAPbouiCOM.Matrix mtxAprov;
         SAPbobsCOM.Recordset oRst = null;
 
         public formAprov()
@@ -37,7 +37,7 @@ namespace BOneSolucoes.Forms.Compras
         /// </summary>
         public override void OnInitializeComponent()
         {
-            this.Matrix0 = ((SAPbouiCOM.Matrix)(this.GetItem("mtxAprov").Specific));
+            this.mtxAprov = ((SAPbouiCOM.Matrix)(this.GetItem("mtxAprov").Specific));
             this.Button0 = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
             this.Button1 = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
             this.StaticText0 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_3").Specific));
@@ -64,12 +64,11 @@ namespace BOneSolucoes.Forms.Compras
         {
         }
 
-        
-
         private void OnCustomInitialize()
         {
             LoadVendComp();
             LoadFilial();
+            LoadMatrix();
         }
 
         /*Metodo para carregar os Compradores e Vendedores*/
@@ -141,6 +140,40 @@ namespace BOneSolucoes.Forms.Compras
 
         }
 
-        
+        /* Metodo para carregar Matrix */
+        public void LoadMatrix()
+        {
+            this.UIAPIRawForm.Freeze(true);
+            try
+            {
+                string query = string.Format(Resources.Resource.BONE_ExecAprov, Program.oCompany.UserSignature);
+
+                this.UIAPIRawForm.DataSources.DataTables.Item("mtxAprov").ExecuteQuery(query);
+                mtxAprov.Columns.Item("colSel").DataBind.Bind("mtxAprov", "Sel");
+                mtxAprov.Columns.Item("colTipoDoc").DataBind.Bind("mtxAprov", "TipoDoc");
+                mtxAprov.Columns.Item("colNumDoc").DataBind.Bind("mtxAprov", "DocEntry");
+                mtxAprov.Columns.Item("colCodPn").DataBind.Bind("mtxAprov", "CardCode");
+                mtxAprov.Columns.Item("colNamePn").DataBind.Bind("mtxAprov", "CardName");
+                mtxAprov.Columns.Item("colFilial").DataBind.Bind("mtxAprov", "BplName");
+                mtxAprov.Columns.Item("colComVen").DataBind.Bind("mtxAprov", "SlpName");
+                mtxAprov.Columns.Item("colEtapa").DataBind.Bind("mtxAprov", "NameEtapa");
+                mtxAprov.Columns.Item("colModAut").DataBind.Bind("mtxAprov", "ModeloAut");
+                mtxAprov.Columns.Item("colCondP").DataBind.Bind("mtxAprov", "PaymentName");
+                mtxAprov.Columns.Item("colFmPag").DataBind.Bind("mtxAprov", "PaymentMethod");
+                mtxAprov.Columns.Item("colDocT").DataBind.Bind("mtxAprov", "DocTotal");
+
+                mtxAprov.LoadFromDataSource();
+                mtxAprov.AutoResizeColumns();
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+            finally
+            {
+                this.UIAPIRawForm.Freeze(false);
+            }
+
+        }
     }
 }

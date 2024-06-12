@@ -101,6 +101,7 @@
   <ItemGroup>
     <Content Include="Menu\menuAdd.xml" />
     <Content Include="Menu\menuRemove.xml" />
+    <Content Include="Resources\SQL\BONE_ExecAprov.sql" />
     <Content Include="Resources\SQL\LoadBP.sql" />
     <Content Include="Resources\SQL\LoadBPFilter.sql" />
     <Content Include="Resources\SQL\LoadConfAprov.sql" />

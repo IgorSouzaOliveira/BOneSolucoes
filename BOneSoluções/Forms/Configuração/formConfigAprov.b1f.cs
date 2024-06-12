@@ -15,6 +15,7 @@ namespace BOneSolucoes.Forms.Configuração
         private SAPbouiCOM.StaticText StaticText0;
         private SAPbouiCOM.ComboBox ComboBox0;
         private SAPbouiCOM.Button Button2;
+        private SAPbouiCOM.Button Button3;
         private SAPbouiCOM.Matrix mtxConf;
         public formConfigAprov()
         {
@@ -35,6 +36,8 @@ namespace BOneSolucoes.Forms.Configuração
             this.ComboBox0.ComboSelectAfter += new SAPbouiCOM._IComboBoxEvents_ComboSelectAfterEventHandler(this.ComboBox0_ComboSelectAfter);
             this.Button2 = ((SAPbouiCOM.Button)(this.GetItem("Item_5").Specific));
             this.Button2.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.Button2_PressedAfter);
+            this.Button3 = ((SAPbouiCOM.Button)(this.GetItem("Item_0").Specific));
+            this.Button3.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.Button3_PressedAfter);
             this.OnCustomInitialize();
 
         }
@@ -57,6 +60,7 @@ namespace BOneSolucoes.Forms.Configuração
 
                 this.UIAPIRawForm.DataSources.DataTables.Item("mtxConf").ExecuteQuery(Resources.Resource.LoadConfAprov);
                 mtxConf.Columns.Item("#").DataBind.Bind("mtxConf", "Code");
+                mtxConf.Columns.Item("colSel").DataBind.Bind("mtxConf", "Sel");
                 mtxConf.Columns.Item("colObj").DataBind.Bind("mtxConf", "U_BOne_ObjectType");
                 mtxConf.Columns.Item("colName").DataBind.Bind("mtxConf", "U_BOne_NomeConsulta");
                 mtxConf.Columns.Item("colQuery").DataBind.Bind("mtxConf", "U_BOne_Query");
@@ -139,16 +143,19 @@ namespace BOneSolucoes.Forms.Configuração
             {
                 for (int i = 0; i < oDT.Rows.Count; i++)
                 {
-                    if (oTable.GetByKey(oDT.GetValue(0, i).ToString()))
+                    if (oDT.GetValue("Code", i).ToString() == "")
+                        return;
+
+                    if (oTable.GetByKey(oDT.GetValue("Code", i).ToString()))
                     {
-                        oTable.Code = oDT.GetValue(0, i).ToString();
-                        oTable.Name = oDT.GetValue(0, i).ToString();
-                        oTable.UserFields.Fields.Item("U_BONE_ObjectType").Value = oDT.GetValue(1, i).ToString();
-                        oTable.UserFields.Fields.Item("U_BOne_NomeConsulta").Value = oDT.GetValue(2, i).ToString();
-                        oTable.UserFields.Fields.Item("U_BOne_Query").Value = oDT.GetValue(3, i).ToString();
-                        oTable.UserFields.Fields.Item("U_BOne_CodeEtapa").Value = oDT.GetValue(4, i).ToString();
-                        oTable.UserFields.Fields.Item("U_BOne_EtapaAut").Value = oDT.GetValue(5, i).ToString();
-                        oTable.UserFields.Fields.Item("U_BOne_Ativo").Value = oDT.GetValue(6, i).ToString();
+                        oTable.Code = oDT.GetValue("Code", i).ToString();
+                        oTable.Name = oDT.GetValue("Code", i).ToString();
+                        oTable.UserFields.Fields.Item("U_BONE_ObjectType").Value = oDT.GetValue(2, i).ToString();
+                        oTable.UserFields.Fields.Item("U_BOne_NomeConsulta").Value = oDT.GetValue(3, i).ToString();
+                        oTable.UserFields.Fields.Item("U_BOne_Query").Value = oDT.GetValue(4, i).ToString();
+                        oTable.UserFields.Fields.Item("U_BOne_CodeEtapa").Value = oDT.GetValue(5, i).ToString();
+                        oTable.UserFields.Fields.Item("U_BOne_EtapaAut").Value = oDT.GetValue(6, i).ToString();
+                        oTable.UserFields.Fields.Item("U_BOne_Ativo").Value = oDT.GetValue(7, i).ToString();
 
                         Int32 lRetU = oTable.Update();
 
@@ -158,15 +165,15 @@ namespace BOneSolucoes.Forms.Configuração
                         }
                     }
                     else
-                    {
-                        oTable.Code = oDT.GetValue(0, i).ToString();
-                        oTable.Name = oDT.GetValue(0, i).ToString();
-                        oTable.UserFields.Fields.Item("U_BONE_ObjectType").Value = oDT.GetValue(1, i).ToString();
-                        oTable.UserFields.Fields.Item("U_BOne_NomeConsulta").Value = oDT.GetValue(2, i).ToString();
-                        oTable.UserFields.Fields.Item("U_BOne_Query").Value = oDT.GetValue(3, i).ToString();
-                        oTable.UserFields.Fields.Item("U_BOne_CodeEtapa").Value = oDT.GetValue(4, i).ToString();
-                        oTable.UserFields.Fields.Item("U_BOne_EtapaAut").Value = oDT.GetValue(5, i).ToString();
-                        oTable.UserFields.Fields.Item("U_BOne_Ativo").Value = oDT.GetValue(6, i).ToString();
+                    {       
+                        oTable.Code = oDT.GetValue("Code", i).ToString();
+                        oTable.Name = oDT.GetValue("Code", i).ToString();
+                        oTable.UserFields.Fields.Item("U_BONE_ObjectType").Value = oDT.GetValue(2, i).ToString();
+                        oTable.UserFields.Fields.Item("U_BOne_NomeConsulta").Value = oDT.GetValue(3, i).ToString();
+                        oTable.UserFields.Fields.Item("U_BOne_Query").Value = oDT.GetValue(4, i).ToString();
+                        oTable.UserFields.Fields.Item("U_BOne_CodeEtapa").Value = oDT.GetValue(5, i).ToString();
+                        oTable.UserFields.Fields.Item("U_BOne_EtapaAut").Value = oDT.GetValue(6, i).ToString();
+                        oTable.UserFields.Fields.Item("U_BOne_Ativo").Value = oDT.GetValue(7, i).ToString();
 
                         Int32 lRetA = oTable.Add();
 
@@ -198,7 +205,6 @@ namespace BOneSolucoes.Forms.Configuração
             }
 
         }
-
         private void ComboBox0_ComboSelectAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
             this.UIAPIRawForm.Freeze(true);
@@ -206,7 +212,7 @@ namespace BOneSolucoes.Forms.Configuração
             {
                 var objType = this.UIAPIRawForm.DataSources.UserDataSources.Item("udTela").ValueEx;
 
-                string query = $@"{Resources.Resource.LoadConfAprov} WHERE T0.""U_BONE_ObjectType"" = {objType}"; 
+                string query = $@"{Resources.Resource.LoadConfAprov} WHERE T0.""U_BONE_ObjectType"" = {objType}";
 
                 this.UIAPIRawForm.DataSources.DataTables.Item("mtxConf").ExecuteQuery(query);
 
@@ -216,12 +222,59 @@ namespace BOneSolucoes.Forms.Configuração
             }
             catch (Exception ex)
             {
-               Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
             }
             finally
             {
                 this.UIAPIRawForm.Freeze(false);
             }
         }
+        private void Button3_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            SAPbobsCOM.UserTable oTable = Program.oCompany.UserTables.Item("BONMODAPROV");
+
+            try
+            {
+                this.UIAPIRawForm.Freeze(true);
+
+                if (Application.SBO_Application.MessageBox("A linha selecionada será excluida." + Environment.NewLine + "Deseja continuar ?", 1, "Sim", "Não") != 1)
+                    return;
+
+                for (int i = mtxConf.RowCount; i >= 1; i--)
+                {
+                    var selected = ((SAPbouiCOM.CheckBox)mtxConf.Columns.Item("colSel").Cells.Item(i).Specific).Checked;
+
+                    if (selected == false)
+                        continue;                    
+
+                    var getKey = ((SAPbouiCOM.EditText)mtxConf.Columns.Item("#").Cells.Item(i).Specific).Value;
+                    if (oTable.GetByKey(getKey))
+                    {
+                        Int32 lRet = oTable.Remove();
+                        mtxConf.DeleteRow(i);
+                        mtxConf.FlushToDataSource();
+
+                        if (lRet != 0)
+                        {
+                            throw new Exception(Program.oCompany.GetLastErrorDescription());
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+            finally
+            {
+                if (oTable != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oTable);
+                }
+
+                this.UIAPIRawForm.Freeze(false);
+            }
+        }
+
     }
 }
