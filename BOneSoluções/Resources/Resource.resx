@@ -133,6 +133,9 @@
   <data name="LoadConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>sql\loadconfig.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="LoadDocAprove" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>sql\loaddocaprove.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="LoadPed" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>sql\loadped.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>

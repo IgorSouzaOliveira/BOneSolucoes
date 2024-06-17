@@ -61,7 +61,8 @@ namespace BOneSolucoes.Resources {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a EXEC [BONE_ExecAprov] @UserAprov  = &apos;{0}&apos;.
+        ///   Consulta uma cadeia de caracteres localizada semelhante a  EXEC [BONE_ExecAprov] @UserAprov  = &apos;{0}&apos;
+        ///.
         /// </summary>
         internal static string BONE_ExecAprov {
             get {
@@ -112,7 +113,7 @@ namespace BOneSolucoes.Resources {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT T0.&quot;Code&quot;,T0.&quot;U_BONE_ObjectType&quot;, T0.&quot;U_BONE_NomeConsulta&quot;, T0.&quot;U_BONE_Query&quot;,T0.&quot;U_BONE_CodeEtapa&quot;, T0.&quot;U_BOne_EtapaAut&quot;, T0.&quot;U_BOne_Ativo&quot; FROM [@BONMODAPROV] T0.
+        ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT &apos;&apos; as &apos;Sel&apos;,T0.&quot;Code&quot;,T0.&quot;U_BONE_ObjectType&quot;, T0.&quot;U_BONE_NomeConsulta&quot;, T0.&quot;U_BONE_Query&quot;,T0.&quot;U_BONE_CodeEtapa&quot;, T0.&quot;U_BOne_EtapaAut&quot;, T0.&quot;U_BOne_Ativo&quot; FROM [@BONMODAPROV] T0.
         /// </summary>
         internal static string LoadConfAprov {
             get {
@@ -127,6 +128,15 @@ namespace BOneSolucoes.Resources {
         internal static string LoadConfig {
             get {
                 return ResourceManager.GetString("LoadConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a .
+        /// </summary>
+        internal static string LoadDocAprove {
+            get {
+                return ResourceManager.GetString("LoadDocAprove", resourceCulture);
             }
         }
         

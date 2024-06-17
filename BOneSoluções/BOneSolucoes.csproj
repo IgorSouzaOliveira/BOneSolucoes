@@ -68,7 +68,7 @@
   <ItemGroup>
     <Compile Include="Entities\EventClass.cs" />
     <Compile Include="Entities\Invoice.cs" />
-    <Compile Include="Forms\Compras\formAprov.b1f.cs">
+    <Compile Include="Forms\AprovaçãoDocumento\formAprov.b1f.cs">
       <DependentUpon>formAprov.b1f</DependentUpon>
     </Compile>
     <Compile Include="Forms\Configuração\formConfigAprov.b1f.cs">
@@ -106,6 +106,7 @@
     <Content Include="Resources\SQL\LoadBPFilter.sql" />
     <Content Include="Resources\SQL\LoadConfAprov.sql" />
     <Content Include="Resources\SQL\LoadConfig.sql" />
+    <Content Include="Resources\SQL\LoadDocAprove.sql" />
     <Content Include="Resources\SQL\LoadPed.sql" />
     <Content Include="Resources\SQL\LoadPedFilter.sql" />
   </ItemGroup>
@@ -113,7 +114,7 @@
     <Folder Include="Imagens\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Forms\Compras\formAprov.b1f">
+    <None Include="Forms\AprovaçãoDocumento\formAprov.b1f">
       <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Forms\Configuração\formConfigAprov.b1f">

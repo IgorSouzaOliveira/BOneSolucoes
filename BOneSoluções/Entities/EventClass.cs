@@ -233,7 +233,7 @@ namespace BOneSolucoes.Entities
                                 throw new Exception(Program.oCompany.GetLastErrorDescription());
                             }
 
-                            InsertTableAprov(pvalType,docEntry, oDoc.CardCode, oDoc.CardName, oDoc.BPL_IDAssignedToInvoice, oDoc.BPLName, oDoc.SalesPersonCode, oDoc.UserSign,
+                            InsertTableAprov(oDoc.DocDate,pvalType,docEntry, oDoc.CardCode, oDoc.CardName, oDoc.BPL_IDAssignedToInvoice, oDoc.BPLName, oDoc.SalesPersonCode, oDoc.UserSign,
                                 oDoc.PaymentGroupCode, oDoc.PaymentMethod, oDoc.DocTotal, codeEtapa, nameEtapa, modeloAut, query, "FALSE", 0); ;
                         }
 
@@ -261,12 +261,13 @@ namespace BOneSolucoes.Entities
         }
 
         /* Metodo para adicionar na tabela de aprovação*/
-        public static void InsertTableAprov(string tipoDoc, string numDoc, string cardCode, string cardName, int bplID, string bplName, int salesPersonCode, int userSign, int paymentCode, string paymentMethod, double docTotal, int codigoEtapa, string nomeEtapa, string modeloAut, string queryAut, string autorizado, int processado)
+        public static void InsertTableAprov(DateTime docDate,string tipoDoc, string numDoc, string cardCode, string cardName, int bplID, string bplName, int salesPersonCode, int userSign, int paymentCode, string paymentMethod, double docTotal, int codigoEtapa, string nomeEtapa, string modeloAut, string queryAut, string autorizado, int processado)
         {
             SAPbobsCOM.UserTable oTable = Program.oCompany.UserTables.Item("BONEAPROV");
 
             try
             {
+                oTable.UserFields.Fields.Item("U_BOneDocDate").Value = docDate;
                 oTable.UserFields.Fields.Item("U_BOneTipoDoc").Value = tipoDoc;
                 oTable.UserFields.Fields.Item("U_BOneNumDoc").Value = numDoc;
                 oTable.UserFields.Fields.Item("U_BOneCardCode").Value = cardCode;
