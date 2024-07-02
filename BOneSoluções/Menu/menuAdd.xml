@@ -37,6 +37,15 @@
 				</Menus>
 			</Menu>
 		</action>
+		<action type="add">
+			<Menu Checked="0" Enabled="1" FatherUID="mnu_mainmenu" Position="5" String="Importação XML" Type="2" UniqueID="mnuImpXML" image="">
+				<Menus>
+					<action type="add">
+						<Menu Checked="0" Enabled="1" FatherUID="mnuImpXML" Position="1" String="Assistente de importação de XML" Type="1" UniqueID="mnuImportXml" />
+					</action>
+				</Menus>
+			</Menu>
+		</action>
 	</Menus>
 </Application>
 

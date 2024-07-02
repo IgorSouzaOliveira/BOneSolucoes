@@ -77,6 +77,12 @@
     <Compile Include="Forms\Configuração\formMain.b1f.cs">
       <DependentUpon>formMain.b1f</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ImportacaoXML\formAssisImp.b1f.cs">
+      <DependentUpon>formAssisImp.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ImportacaoXML\formImpXML.b1f.cs">
+      <DependentUpon>formImpXML.b1f</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ParceiroDeNegocios\formPDN.b1f.cs">
       <DependentUpon>formPDN.b1f</DependentUpon>
     </Compile>
@@ -121,6 +127,12 @@
       <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Forms\Configuração\formMain.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Forms\ImportacaoXML\formAssisImp.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Forms\ImportacaoXML\formImpXML.b1f">
       <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Forms\ParceiroDeNegocios\formPDN.b1f">

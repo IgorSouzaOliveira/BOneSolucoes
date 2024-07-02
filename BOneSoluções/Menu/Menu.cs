@@ -1,5 +1,6 @@
 ﻿using BOneSolucoes.Forms;
 using BOneSolucoes.Forms.Compras;
+using BOneSolucoes.Forms.ImportacaoXML;
 using BOneSolucoes.Forms.ParceiroDeNegocios;
 using BOneSolucoes.Forms.Vendas;
 using SAPbouiCOM.Framework;
@@ -69,6 +70,12 @@ namespace BOneSolucoes
                 {
                     formAprov formAprov = new formAprov();
                     formAprov.Show();
+                }
+
+                if (pVal.BeforeAction && pVal.MenuUID == "mnuImportXml")
+                {
+                    formImpXML formImpXML = new formImpXML();
+                    formImpXML.Show();
                 }
             }
             catch (Exception ex)

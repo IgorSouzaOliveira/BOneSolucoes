@@ -8,3 +8,13 @@ C:\Users\SAPB1DEV\Desktop\_source\BOneSolucoes\BOneSoluções\bin\x64\Debug\SAPB
 C:\Users\SAPB1DEV\Desktop\_source\BOneSolucoes\BOneSoluções\obj\x64\Debug\BOneSolucoes.csproj.CopyComplete
 C:\Users\SAPB1DEV\Desktop\_source\BOneSolucoes\BOneSoluções\obj\x64\Debug\BOneSolucoes.exe
 C:\Users\SAPB1DEV\Desktop\_source\BOneSolucoes\BOneSoluções\obj\x64\Debug\BOneSolucoes.pdb
+C:\Users\igor.oliveira\Desktop\_source\BOneSolucoes\BOneSoluções\bin\x64\Debug\BOneSolucoes.exe
+C:\Users\igor.oliveira\Desktop\_source\BOneSolucoes\BOneSoluções\bin\x64\Debug\BOneSolucoes.pdb
+C:\Users\igor.oliveira\Desktop\_source\BOneSolucoes\BOneSoluções\bin\x64\Debug\SAPBusinessOneSDK.dll
+C:\Users\igor.oliveira\Desktop\_source\BOneSolucoes\BOneSoluções\obj\x64\Debug\BOneSolucoes.csproj.AssemblyReference.cache
+C:\Users\igor.oliveira\Desktop\_source\BOneSolucoes\BOneSoluções\obj\x64\Debug\BOneSolucoes.Resources.Resource.resources
+C:\Users\igor.oliveira\Desktop\_source\BOneSolucoes\BOneSoluções\obj\x64\Debug\BOneSolucoes.csproj.GenerateResource.cache
+C:\Users\igor.oliveira\Desktop\_source\BOneSolucoes\BOneSoluções\obj\x64\Debug\BOneSolucoes.csproj.CoreCompileInputs.cache
+C:\Users\igor.oliveira\Desktop\_source\BOneSolucoes\BOneSoluções\obj\x64\Debug\BOneSolucoes.csproj.CopyComplete
+C:\Users\igor.oliveira\Desktop\_source\BOneSolucoes\BOneSoluções\obj\x64\Debug\BOneSolucoes.exe
+C:\Users\igor.oliveira\Desktop\_source\BOneSolucoes\BOneSoluções\obj\x64\Debug\BOneSolucoes.pdb
