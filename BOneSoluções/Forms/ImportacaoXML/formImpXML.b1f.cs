@@ -54,37 +54,13 @@ namespace BOneSolucoes.Forms.ImportacaoXML
 
         private void OnCustomInitialize()
         {
-            radNfE.GroupWith("rdPedC");
-            rdRecM.GroupWith("radNfE");
+           
         }
 
         private void bArquivo_PressedBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
         {
             BubbleEvent = true;
-
-            try
-            {
-
-                Thread t = new Thread(() =>
-                {
-                    OpenFileDialog openFileDialog = new OpenFileDialog();
-
-                    DialogResult dr = openFileDialog.ShowDialog(new Form());
-
-
-                    if (dr == DialogResult.OK)
-                    {                        
-                        this.UIAPIRawForm.DataSources.UserDataSources.Item("udArquivo").Value = openFileDialog.FileName;
-                    }
-                });
-                t.IsBackground = true;
-                t.SetApartmentState(ApartmentState.STA);
-                t.Start();
-            }
-            catch (Exception ex)
-            {
-                Program.Sbo_App.MessageBox(ex.Message,1,"Ok","Cancelar");                
-            }
+           
 
         }
 

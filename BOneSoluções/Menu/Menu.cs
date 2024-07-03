@@ -74,8 +74,8 @@ namespace BOneSolucoes
 
                 if (pVal.BeforeAction && pVal.MenuUID == "mnuImportXml")
                 {
-                    formImpXML formImpXML = new formImpXML();
-                    formImpXML.Show();
+                    formAssisImp formAssisImp = new formAssisImp();
+                    formAssisImp.Show();
                 }
             }
             catch (Exception ex)
