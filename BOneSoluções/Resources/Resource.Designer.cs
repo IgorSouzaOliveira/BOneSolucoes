@@ -71,6 +71,15 @@ namespace BOneSolucoes.Resources {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT T0.&quot;U_emitCNPJ&quot;, T0.&quot;U_enderEmitIE&quot;, T0.&quot;U_emitxNome&quot;, T0.&quot;U_prodcProd&quot; FROM [@BONEXMLDATA]	T0.
+        /// </summary>
+        internal static string CarregarXmlImp {
+            get {
+                return ResourceManager.GetString("CarregarXmlImp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT 
         ///		&apos;&apos; [Checked]
         ///	   ,CardCode [CardCode]
@@ -132,7 +141,22 @@ namespace BOneSolucoes.Resources {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a .
+        ///   Consulta uma cadeia de caracteres localizada semelhante a BEGIN 
+        ///	
+        ///	DECLARE @DocEntry AS NVARCHAR(254) = &apos;{0}&apos;
+        ///	DECLARE @TipoDoc AS NVARCHAR(254) = &apos;{1}&apos;
+        ///	DECLARE @DataDe AS DATE = &apos;{2}&apos;
+        ///	DECLARE @DataAte AS DATE = &apos;{3}&apos;
+        ///	DECLARE @SlpCode AS NVARCHAR(254) = &apos;{4}&apos;
+        ///	DECLARE @Filial AS NVARCHAR(254) = &apos;{5}&apos;
+        ///	DECLARE @UserAprove AS INT = &apos;{6}&apos;
+        ///
+        ///SELECT   
+        ///  &apos;&apos; as &apos;Sel&apos;,  
+        ///  T0.U_BOneDocDate [DocDate],
+        ///  CASE WHEN T0.U_BOneTipoDoc = &apos;17&apos; THEN &apos;Pedido de venda&apos;  
+        ///  WHEN T0.U_BOneTipoDoc = &apos;540000006&apos; THEN &apos;Oferta de compra&apos;  
+        ///  WHEN T0.U_BOneTipoDoc = &apos;22&apos; [o restante da cadeia de caracteres foi truncado]&quot;;.
         /// </summary>
         internal static string LoadDocAprove {
             get {

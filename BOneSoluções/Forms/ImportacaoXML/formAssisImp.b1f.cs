@@ -65,7 +65,8 @@ namespace BOneSolucoes.Forms.ImportacaoXML
 
         private void ReadXML()
         {
-            SAPbobsCOM.UserTable oTable = Program.oCompany.UserTables.Item("");
+            SAPbobsCOM.UserTable oTable = Program.oCompany.UserTables.Item("BONEXMLDATA");
+            SAPbobsCOM.Recordset oRst = (SAPbobsCOM.Recordset)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
 
             try
             {
@@ -78,29 +79,88 @@ namespace BOneSolucoes.Forms.ImportacaoXML
                     Application.SBO_Application.MessageBox("Arquivo não encontrado.", 1, "Ok", "Cancelar");
                 }
 
-                XmlSerializer ser = new XmlSerializer(typeof(nfeProc));
+                XmlSerializer ser = new XmlSerializer(typeof(NFeProc));
 
                 using (TextReader textReader = new StreamReader(path))
                 using (XmlTextReader reader = new XmlTextReader(textReader))
                 {
-                    nfeProc nfe = (nfeProc)ser.Deserialize(reader);
+                    NFeProc nfe = (NFeProc)ser.Deserialize(reader);
+
+                    var chaveAcesso = nfe.ProtNFe.InfoProtocolo.chNFe;
+
+                    oRst.DoQuery($"SELECT 'TRUE' FROM [@BONEXMLDATA] WHERE U_ChaveAcesso = '{chaveAcesso}'");
+                    if (oRst.RecordCount > 0)
+                        throw new Exception($"XML: {chaveAcesso}, já foi importado!");
 
 
-
-                    for (int i = 1; i <= mtxImpo.RowCount; i++)
+                    foreach (var produto in nfe.NotaFiscalEletronica.InformacoesNFe.Produtos)
                     {
-                        ((SAPbouiCOM.EditText)mtxImpo.Columns.Item("colCnpj").Cells.Item(i).Specific).Value = nfe.NFe.infNFe.emit.CNPJ.ToString();
-                        ((SAPbouiCOM.EditText)mtxImpo.Columns.Item("colInscri").Cells.Item(i).Specific).Value = nfe.NFe.infNFe.emit.IE.ToString();
-                        ((SAPbouiCOM.EditText)mtxImpo.Columns.Item("colNome").Cells.Item(i).Specific).Value = nfe.NFe.infNFe.emit.xNome.ToString();
+                        /* TAG <ide>*/
+                        oTable.UserFields.Fields.Item("U_ChaveAcesso").Value = nfe.ProtNFe.InfoProtocolo.chNFe;
+                        oTable.UserFields.Fields.Item("U_idecUF").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Identificacao.cUF.ToString();
+                        oTable.UserFields.Fields.Item("U_idecNF").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Identificacao.cNF;
+                        oTable.UserFields.Fields.Item("U_ideMod").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Identificacao.mod;
+                        oTable.UserFields.Fields.Item("U_ideSerie").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Identificacao.serie.ToString();
+                        oTable.UserFields.Fields.Item("U_idenNF").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Identificacao.nNF;
+                        oTable.UserFields.Fields.Item("U_idedhEmi").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Identificacao.dhEmi;
 
-                        var a = nfe.NFe.infNFe.det.GetValue(1).ToString();
+
+                        ///* TAG <emit>*/
+                        oTable.UserFields.Fields.Item("U_emitCNPJ").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.CNPJ;
+                        oTable.UserFields.Fields.Item("U_emitxNome").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.xNome;
+                        oTable.UserFields.Fields.Item("U_emitxFant").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.xFant;
+                        oTable.UserFields.Fields.Item("U_enderEmitxLgr").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.Endereco.xLgr;
+                        oTable.UserFields.Fields.Item("U_enderEmitNro").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.Endereco.nro;
+                        oTable.UserFields.Fields.Item("U_enderEmitxBairro").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.Endereco.xBairro;
+                        oTable.UserFields.Fields.Item("U_enderEmitcMun").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.Endereco.cMun;
+                        oTable.UserFields.Fields.Item("U_enderEmitxMun").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.Endereco.xMun;
+                        oTable.UserFields.Fields.Item("U_enderEmitUF").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.Endereco.UF;
+                        oTable.UserFields.Fields.Item("U_enderEmitCEP").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.Endereco.CEP;
+                        oTable.UserFields.Fields.Item("U_enderEmitcPais").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.Endereco.cPais.ToString();
+                        oTable.UserFields.Fields.Item("U_enderEmitxPais").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.Endereco.xPais;
+                        oTable.UserFields.Fields.Item("U_enderEmitIE").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.IE;
+                        oTable.UserFields.Fields.Item("U_enderEmitCRT").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.CRT.ToString();
+
+                        /* TAG <det>*/
+                        oTable.UserFields.Fields.Item("U_prodcProd").Value = produto.cProd;
+                        oTable.UserFields.Fields.Item("U_prodcEAN").Value = produto.cEAN;
+                        oTable.UserFields.Fields.Item("U_prodxProd").Value = produto.xProd;
+                        oTable.UserFields.Fields.Item("U_prodNCM").Value = produto.NCM;
+                        oTable.UserFields.Fields.Item("U_prodCFOP").Value = produto.CFOP;
+                        oTable.UserFields.Fields.Item("U_produCom").Value = produto.uCom;
+                        oTable.UserFields.Fields.Item("U_prodqCom").Value = produto.qCom;
+                        oTable.UserFields.Fields.Item("U_prodvUnCom").Value = produto.vUnCom;                     
 
 
+                        
 
+                        ///* TAG <dest>*/
+                        //oTable.UserFields.Fields.Item("U_destCNPJ").Value = nfe.NFe.infNFe.dest.CNPJ.ToString();
+                        //oTable.UserFields.Fields.Item("U_destxNome").Value = nfe.NFe.infNFe.dest.xNome.ToString();
+                        //oTable.UserFields.Fields.Item("U_enderDestxLgr").Value = nfe.NFe.infNFe.dest.enderDest.xLgr.ToString();
+                        //oTable.UserFields.Fields.Item("U_enderDestNro").Value = nfe.NFe.infNFe.dest.enderDest.nro.ToString();
+                        //oTable.UserFields.Fields.Item("U_enderDestxBairro").Value = nfe.NFe.infNFe.dest.enderDest.xBairro.ToString();
+                        //oTable.UserFields.Fields.Item("U_enderDestcMun").Value = nfe.NFe.infNFe.dest.enderDest.cMun.ToString();
+                        //oTable.UserFields.Fields.Item("U_enderDestxMun").Value = nfe.NFe.infNFe.dest.enderDest.xMun.ToString();
+                        //oTable.UserFields.Fields.Item("U_enderDestCEP").Value = nfe.NFe.infNFe.dest.enderDest.CEP.ToString();
+                        //oTable.UserFields.Fields.Item("U_enderDestcPais").Value = Convert.ToInt32(nfe.NFe.infNFe.dest.enderDest.cPais);
+                        //oTable.UserFields.Fields.Item("U_enderDestxPais").Value = nfe.NFe.infNFe.dest.enderDest.xPais.ToString();
+                        //oTable.UserFields.Fields.Item("U_enderDestfone").Value = nfe.NFe.infNFe.dest.enderDest.fone.ToString();
+                        //oTable.UserFields.Fields.Item("U_indIEDest").Value = nfe.NFe.infNFe.dest.indIEDest.ToString();
+                        //oTable.UserFields.Fields.Item("U_enderDestIE").Value = nfe.NFe.infNFe.dest.IE.ToString();
+                        //oTable.UserFields.Fields.Item("U_enderDestEmail").Value = nfe.NFe.infNFe.dest.email.ToString();
 
+                        int lRet = oTable.Add();
 
+                        if (lRet != 0)
+                        {
+                            throw new Exception(Program.oCompany.GetLastErrorDescription());
+                        }
                     }
 
+
+                    LoadMatrix();
+                    Application.SBO_Application.StatusBar.SetText("Processo finalizado com sucesso.", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
                 }
 
             }
@@ -112,12 +172,47 @@ namespace BOneSolucoes.Forms.ImportacaoXML
                     Application.SBO_Application.MessageBox($"Erro na leitura do XML. {Environment.NewLine} Detalhes do erro: {ex.InnerException.Message}");
                 }
             }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.MessageBox(ex.Message);
+            }
             finally
             {
                 if (oTable != null)
                 {
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(oTable);
                 }
+
+                if (oRst != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oRst);
+                }
+                this.UIAPIRawForm.Freeze(false);
+            }
+        }
+
+        private void LoadMatrix()
+        {
+            try
+            {
+                this.UIAPIRawForm.Freeze(true);
+
+                this.UIAPIRawForm.DataSources.DataTables.Item("dtAssisAp").ExecuteQuery(Resources.Resource.CarregarXmlImp);
+
+                mtxImpo.Columns.Item("colCnpj").DataBind.Bind("dtAssisAp", "U_emitCNPJ");
+                mtxImpo.Columns.Item("colInscri").DataBind.Bind("dtAssisAp", "U_enderEmitIE");
+                mtxImpo.Columns.Item("colNome").DataBind.Bind("dtAssisAp", "U_emitxNome");
+                mtxImpo.Columns.Item("colItemC").DataBind.Bind("dtAssisAp", "U_prodcProd");
+
+                mtxImpo.LoadFromDataSource();
+                mtxImpo.AutoResizeColumns();
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.MessageBox(ex.Message,1,"Ok","Cancel");
+            }
+            finally
+            {
                 this.UIAPIRawForm.Freeze(false);
             }
         }

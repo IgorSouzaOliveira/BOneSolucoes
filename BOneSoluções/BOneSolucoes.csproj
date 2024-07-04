@@ -77,7 +77,15 @@
     <Compile Include="Forms\Configuração\formMain.b1f.cs">
       <DependentUpon>formMain.b1f</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ImportacaoXML\Entities\Destinatario.cs" />
+    <Compile Include="Forms\ImportacaoXML\Entities\Detalhe.cs" />
+    <Compile Include="Forms\ImportacaoXML\Entities\Emitente.cs" />
+    <Compile Include="Forms\ImportacaoXML\Entities\Endereco.cs" />
+    <Compile Include="Forms\ImportacaoXML\Entities\Identificacao.cs" />
     <Compile Include="Forms\ImportacaoXML\Entities\NFe.cs" />
+    <Compile Include="Forms\ImportacaoXML\Entities\NFeProc.cs" />
+    <Compile Include="Forms\ImportacaoXML\Entities\Produto.cs" />
+    <Compile Include="Forms\ImportacaoXML\Entities\ProtNFe.cs" />
     <Compile Include="Forms\ImportacaoXML\formAssisImp.b1f.cs">
       <DependentUpon>formAssisImp.b1f</DependentUpon>
     </Compile>
@@ -106,6 +114,7 @@
     <Content Include="Menu\menuAdd.xml" />
     <Content Include="Menu\menuRemove.xml" />
     <Content Include="Resources\SQL\BONE_ExecAprov.sql" />
+    <Content Include="Resources\SQL\CarregarXmlImp.sql" />
     <Content Include="Resources\SQL\LoadBP.sql" />
     <Content Include="Resources\SQL\LoadBPFilter.sql" />
     <Content Include="Resources\SQL\LoadConfAprov.sql" />

@@ -121,6 +121,9 @@
   <data name="BONE_ExecAprov" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>sql\bone_execaprov.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="CarregarXmlImp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>sql\carregarxmlimp.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="LoadBP" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>sql\loadbp.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>

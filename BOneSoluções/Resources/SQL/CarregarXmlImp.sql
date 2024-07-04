@@ -1,0 +1,1 @@
+﻿SELECT T0."U_emitCNPJ", T0."U_enderEmitIE", T0."U_emitxNome", T0."U_prodcProd" FROM [@BONEXMLDATA]	T0
