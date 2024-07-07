@@ -7,8 +7,6 @@ using System.Xml.Serialization;
 using System.IO;
 using System.Xml;
 using BOneSolucoes.Forms.ImportacaoXML.Entities;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace BOneSolucoes.Forms.ImportacaoXML
 {
@@ -17,16 +15,14 @@ namespace BOneSolucoes.Forms.ImportacaoXML
     {
 
         private SAPbouiCOM.Matrix mtxImpo;
-        private SAPbouiCOM.Button Button1;
         private SAPbouiCOM.Button Button2;
         private SAPbouiCOM.Button Button3;
         private SAPbouiCOM.Button Button4;
         private SAPbouiCOM.OptionBtn rdPedC, rdRecM, radNfE;
         private SAPbouiCOM.EditText EditText4;
-
+        private SAPbouiCOM.StaticText StaticText2;
         private SAPbouiCOM.StaticText StaticText0;
-
-
+        private SAPbouiCOM.Button Button0;
 
         public formAssisImp()
         {
@@ -38,7 +34,6 @@ namespace BOneSolucoes.Forms.ImportacaoXML
         public override void OnInitializeComponent()
         {
             this.mtxImpo = ((SAPbouiCOM.Matrix)(this.GetItem("mtxImpo").Specific));
-            this.Button1 = ((SAPbouiCOM.Button)(this.GetItem("bProcessar").Specific));
             this.Button2 = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
             this.Button3 = ((SAPbouiCOM.Button)(this.GetItem("bArquivo").Specific));
             this.Button3.PressedBefore += new SAPbouiCOM._IButtonEvents_PressedBeforeEventHandler(this.Button3_PressedBefore);
@@ -50,6 +45,8 @@ namespace BOneSolucoes.Forms.ImportacaoXML
             this.EditText4 = ((SAPbouiCOM.EditText)(this.GetItem("Item_3").Specific));
             this.StaticText0 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_4").Specific));
             this.StaticText2 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_6").Specific));
+            this.Button0 = ((SAPbouiCOM.Button)(this.GetItem("btnGerarDo").Specific));
+            this.Button0.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.Button0_PressedAfter);
             this.OnCustomInitialize();
 
         }
@@ -63,20 +60,22 @@ namespace BOneSolucoes.Forms.ImportacaoXML
 
         private void OnCustomInitialize()
         {
+            Utilizacao();
             mtxImpo.AutoResizeColumns();
             radNfE.GroupWith("rdPedC");
             rdRecM.GroupWith("radNfE");
             //rdImpMul.GroupWith("rdImpUni");
         }
-
         private void ReadXML(string[] arquivos)
         {
             SAPbobsCOM.UserTable oTable = Program.oCompany.UserTables.Item("BONEXMLDATA");
             SAPbobsCOM.Recordset oRst = (SAPbobsCOM.Recordset)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+            SAPbobsCOM.Recordset oRstCardCode = (SAPbobsCOM.Recordset)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
 
             try
             {
                 this.UIAPIRawForm.Freeze(true);
+                var chaveAcesso = string.Empty;
 
 
                 foreach (var arq in arquivos)
@@ -95,11 +94,21 @@ namespace BOneSolucoes.Forms.ImportacaoXML
                     {
                         NFeProc nfe = (NFeProc)ser.Deserialize(reader);
 
-                        var chaveAcesso = nfe.ProtNFe.InfoProtocolo.chNFe;
+                        chaveAcesso = nfe.ProtNFe.InfoProtocolo.chNFe;
+
+                        oRstCardCode.DoQuery($@"SELECT TOP 1 A.CardCode FROM CRD7 A WHERE A.""TaxId0"" = '{FormatarCnpj(nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.CNPJ)}' AND A.CardCode = (SELECT B.CardCode FROM OSCN B )");
+                        if (oRstCardCode.RecordCount == 0)
+                            throw new Exception("Necessário vinculo na tela de Números de catálogo de parceiro de negócios.");
+
 
                         oRst.DoQuery($"SELECT 'TRUE' FROM [@BONEXMLDATA] WHERE U_ChaveAcesso = '{chaveAcesso}'");
                         if (oRst.RecordCount > 0)
-                            throw new Exception($"XML: {chaveAcesso}, já foi importado!");
+                        {
+                            LoadMatrix(chaveAcesso);
+                            return;
+                        }
+                            
+                        // throw new Exception($"XML: {chaveAcesso}, já foi importado!");
 
 
                         foreach (var produto in nfe.NotaFiscalEletronica.InformacoesNFe.Produtos)
@@ -115,7 +124,8 @@ namespace BOneSolucoes.Forms.ImportacaoXML
 
 
                             /* TAG <emit>*/
-                            oTable.UserFields.Fields.Item("U_emitCNPJ").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.CNPJ;
+
+                            oTable.UserFields.Fields.Item("U_emitCNPJ").Value = FormatarCnpj(nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.CNPJ);
                             oTable.UserFields.Fields.Item("U_emitxNome").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.xNome;
                             oTable.UserFields.Fields.Item("U_emitxFant").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.xFant;
                             oTable.UserFields.Fields.Item("U_enderEmitxLgr").Value = nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.Endereco.xLgr;
@@ -169,7 +179,7 @@ namespace BOneSolucoes.Forms.ImportacaoXML
 
                     }
 
-                    LoadMatrix();
+                    LoadMatrix(chaveAcesso);
                     Application.SBO_Application.StatusBar.SetText("Processo finalizado com sucesso.", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
                 }
 
@@ -197,22 +207,33 @@ namespace BOneSolucoes.Forms.ImportacaoXML
                 {
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(oRst);
                 }
+                if (oRstCardCode != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oRstCardCode);
+                }
                 this.UIAPIRawForm.Freeze(false);
             }
         }
-
-        private void LoadMatrix()
+        private void LoadMatrix(string chaveAcesso)
         {
             try
             {
                 this.UIAPIRawForm.Freeze(true);
 
-                this.UIAPIRawForm.DataSources.DataTables.Item("dtAssisAp").ExecuteQuery(Resources.Resource.CarregarXmlImp);
+                string sqlQuery = string.Format(Resources.Resource.CarregarXmlImp, chaveAcesso);
 
-                mtxImpo.Columns.Item("colCnpj").DataBind.Bind("dtAssisAp", "U_emitCNPJ");
-                mtxImpo.Columns.Item("colInscri").DataBind.Bind("dtAssisAp", "U_enderEmitIE");
-                mtxImpo.Columns.Item("colNome").DataBind.Bind("dtAssisAp", "U_emitxNome");
-                mtxImpo.Columns.Item("colItemC").DataBind.Bind("dtAssisAp", "U_prodcProd");
+                this.UIAPIRawForm.DataSources.DataTables.Item("dtAssisAp").ExecuteQuery(sqlQuery);
+
+                mtxImpo.Columns.Item("colCheck").DataBind.Bind("dtAssisAp", "Check");
+                mtxImpo.Columns.Item("colForne").DataBind.Bind("dtAssisAp", "CardCode");
+                mtxImpo.Columns.Item("colFName").DataBind.Bind("dtAssisAp", "CardName");
+                mtxImpo.Columns.Item("colCnpj").DataBind.Bind("dtAssisAp", "CNPJ");
+                mtxImpo.Columns.Item("colInscri").DataBind.Bind("dtAssisAp", "IE");
+                mtxImpo.Columns.Item("colItemC").DataBind.Bind("dtAssisAp", "ItemCode");
+                mtxImpo.Columns.Item("colPrice").DataBind.Bind("dtAssisAp", "Preço");
+                mtxImpo.Columns.Item("colQtd").DataBind.Bind("dtAssisAp", "Quantidade");
+                mtxImpo.Columns.Item("colEan").DataBind.Bind("dtAssisAp", "EAN");
+                mtxImpo.Columns.Item("colUsage").DataBind.Bind("dtAssisAp", "Usage");
 
                 mtxImpo.LoadFromDataSource();
                 mtxImpo.AutoResizeColumns();
@@ -226,15 +247,12 @@ namespace BOneSolucoes.Forms.ImportacaoXML
                 this.UIAPIRawForm.Freeze(false);
             }
         }
-
         private void Button4_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
             string[] arqSelected = this.UIAPIRawForm.DataSources.UserDataSources.Item("udArquivo").Value.Split(';');
 
-
             ReadXML(arqSelected);
         }
-
         private void Button3_PressedBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
         {
             BubbleEvent = true;
@@ -276,7 +294,147 @@ namespace BOneSolucoes.Forms.ImportacaoXML
             }
 
         }
+        private void Button0_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            bool pedCompra = ((SAPbouiCOM.OptionBtn)this.UIAPIRawForm.Items.Item("rdPedC").Specific).Selected;
+            bool recMercad = ((SAPbouiCOM.OptionBtn)this.UIAPIRawForm.Items.Item("rdRecM").Specific).Selected;
+            bool nfeEntrada = ((SAPbouiCOM.OptionBtn)this.UIAPIRawForm.Items.Item("radNfE").Specific).Selected;
 
-        private SAPbouiCOM.StaticText StaticText2;
+            try
+            {
+                if (pedCompra == true)
+                {
+                    GerarPedCompra();
+                }
+                else if (recMercad == true)
+                {
+
+                }
+                else if (nfeEntrada == true)
+                {
+
+                }
+                else
+                {
+                    Application.SBO_Application.MessageBox("Selecione o tipo de documento a ser gerado.", 1, "Ok", "Cancelar");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+
+        }
+
+        private void Utilizacao()
+        {
+            SAPbouiCOM.Column oColumn = null;
+            SAPbouiCOM.Matrix oMatrix = null;
+            SAPbobsCOM.Recordset oRst = (SAPbobsCOM.Recordset)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+            oMatrix = (SAPbouiCOM.Matrix)this.UIAPIRawForm.Items.Item("mtxImpo").Specific;
+            oColumn = oMatrix.Columns.Item("colUsage");
+
+            try
+            {
+                this.UIAPIRawForm.Freeze(true);
+
+                oRst.DoQuery($@"SELECT T0.""ID"", T0.""Usage"" FROM OUSG T0");
+                if (oRst.RecordCount > 0)
+                {
+                    oRst.MoveFirst();
+                    for (int i = 0; i < oRst.RecordCount; i++)
+                    {
+                        oColumn.ValidValues.Add(oRst.Fields.Item("Id").Value.ToString(), oRst.Fields.Item("Usage").Value.ToString());
+                        oRst.MoveNext();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+            finally
+            {
+                if (oColumn != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oColumn);
+                }
+                if (oMatrix != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oMatrix);
+                }
+                if (oColumn != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oColumn);
+                }
+
+                this.UIAPIRawForm.Freeze(false);
+            }
+        }
+        private string FormatarCnpj(string CNPJ)
+        {
+            try
+            {
+                return Convert.ToUInt64(CNPJ).ToString(@"00\.000\.000\/0000\-00");
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                return string.Empty;
+            }
+        }
+        private void GerarPedCompra()
+        {
+            SAPbobsCOM.Documents oPed = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseOrders);
+            SAPbouiCOM.DataTable oDT = this.UIAPIRawForm.DataSources.DataTables.Item("dtAssisAp");
+
+            try
+            {
+                mtxImpo.FlushToDataSource();
+
+                for (int i = 0; i < oDT.Rows.Count; i++)
+                {
+                    string selected = oDT.GetValue("Check",i).ToString();
+
+                    switch (selected)   
+                    { 
+                        case "Y":
+                            oPed.CardCode = oDT.GetValue("CardCode",i).ToString();
+                            oPed.CardName = oDT.GetValue("CardName", i).ToString();
+                            oPed.Comments = "Documento via importação de XML.";
+                            
+                            oPed.Lines.SetCurrentLine(i);
+                            oPed.Lines.ItemCode = oDT.GetValue("ItemCode",i).ToString();
+                            oPed.Lines.Quantity = Convert.ToDouble(oDT.GetValue("Quantidade", i).ToString());
+                            oPed.Lines.Usage = oDT.GetValue("Usage", i).ToString();
+                            oPed.Lines.Add();
+
+                            int lRet = oPed.Add();
+                            if (lRet != 0)
+                            {
+                                throw new Exception(Program.oCompany.GetLastErrorDescription());
+                            }
+                            var docEntry = Program.oCompany.GetNewObjectKey();
+                            Application.SBO_Application.MessageBox($"Pedido de compra gerado com sucesso: {docEntry} ", 1, "Ok", "Cancelar");
+                            break;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.MessageBox(ex.Message, 1, "Ok", "Cancelar");
+            }
+            finally
+            {
+                if (oPed != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oPed);
+                }
+            }
+        }
     }
 }
