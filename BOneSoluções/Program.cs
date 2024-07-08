@@ -69,6 +69,8 @@ namespace BOneSolucoes
                 case SAPbouiCOM.BoAppEventTypes.aet_FontChanged:
                     break;
                 case SAPbouiCOM.BoAppEventTypes.aet_LanguageChanged:
+                    menu.RemoveMenu();
+                    menu.CreateMenu();
                     break;
                 case SAPbouiCOM.BoAppEventTypes.aet_ServerTerminition:
                     break;
