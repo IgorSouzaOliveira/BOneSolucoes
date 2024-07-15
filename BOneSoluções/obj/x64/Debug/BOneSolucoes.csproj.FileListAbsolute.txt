@@ -18,3 +18,7 @@ C:\Users\igor.oliveira\Desktop\_source\BOneSolucoes\BOneSoluções\obj\x64\Debug
 C:\Users\igor.oliveira\Desktop\_source\BOneSolucoes\BOneSoluções\obj\x64\Debug\BOneSolucoes.csproj.CopyComplete
 C:\Users\igor.oliveira\Desktop\_source\BOneSolucoes\BOneSoluções\obj\x64\Debug\BOneSolucoes.exe
 C:\Users\igor.oliveira\Desktop\_source\BOneSolucoes\BOneSoluções\obj\x64\Debug\BOneSolucoes.pdb
+C:\Users\SAPB1DEV\Desktop\_source\BOneSolucoes\BOneSoluções\bin\x64\Debug\Newtonsoft.Json.dll
+C:\Users\SAPB1DEV\Desktop\_source\BOneSolucoes\BOneSoluções\bin\x64\Debug\RestSharp.dll
+C:\Users\SAPB1DEV\Desktop\_source\BOneSolucoes\BOneSoluções\bin\x64\Debug\Newtonsoft.Json.xml
+C:\Users\SAPB1DEV\Desktop\_source\BOneSolucoes\BOneSoluções\bin\x64\Debug\RestSharp.xml

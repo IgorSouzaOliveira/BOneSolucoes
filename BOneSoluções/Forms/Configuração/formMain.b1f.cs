@@ -14,6 +14,13 @@ namespace BOneSolucoes.Forms
         private SAPbouiCOM.Button Button1;
         private SAPbouiCOM.CheckBox CheckBox0;
         private SAPbouiCOM.Button Button2;
+        private SAPbouiCOM.Folder Folder1;
+        private SAPbouiCOM.EditText editUrl;
+        private SAPbouiCOM.StaticText StaticText0;
+        private SAPbouiCOM.StaticText StaticText3;
+        private SAPbouiCOM.EditText editPort;
+        private SAPbouiCOM.StaticText StaticText4;
+        private SAPbouiCOM.EditText edServer;
         public formMain()
         {
         }
@@ -30,6 +37,13 @@ namespace BOneSolucoes.Forms
             this.CheckBox0 = ((SAPbouiCOM.CheckBox)(this.GetItem("Item_4").Specific));
             this.Button2 = ((SAPbouiCOM.Button)(this.GetItem("Item_5").Specific));
             this.Button2.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.Button2_PressedAfter);
+            this.Folder1 = ((SAPbouiCOM.Folder)(this.GetItem("Item_2").Specific));
+            this.editUrl = ((SAPbouiCOM.EditText)(this.GetItem("editUrl").Specific));
+            this.StaticText0 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_6").Specific));
+            this.StaticText3 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_11").Specific));
+            this.editPort = ((SAPbouiCOM.EditText)(this.GetItem("editPort").Specific));
+            this.StaticText4 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_13").Specific));
+            this.edServer = ((SAPbouiCOM.EditText)(this.GetItem("edServer").Specific));
             this.OnCustomInitialize();
 
         }
@@ -56,6 +70,9 @@ namespace BOneSolucoes.Forms
                 if (oTable.GetByKey("1"))
                 {
                     this.UIAPIRawForm.DataSources.UserDataSources.Item("udCheck01").ValueEx = (string)oTable.UserFields.Fields.Item("U_BOne_AtivoAprov").Value;
+                    this.UIAPIRawForm.DataSources.UserDataSources.Item("udUrl").Value = oTable.UserFields.Fields.Item("U_UrlSL").Value.ToString();
+                    this.UIAPIRawForm.DataSources.UserDataSources.Item("udPorta").Value = oTable.UserFields.Fields.Item("U_PortaSL").Value.ToString();
+                    this.UIAPIRawForm.DataSources.UserDataSources.Item("udServidor").Value = oTable.UserFields.Fields.Item("U_ServidorSL").Value.ToString();
                 }
                 
             }
@@ -104,6 +121,9 @@ namespace BOneSolucoes.Forms
                     oTable.Code = "1";
                     oTable.Name = "1";
                     oTable.UserFields.Fields.Item("U_BOne_AtivoAprov").Value = CheckBox0.Checked ? "Y" : "N";
+                    oTable.UserFields.Fields.Item("U_UrlSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udUrl").Value;
+                    oTable.UserFields.Fields.Item("U_PortaSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udPorta").Value;
+                    oTable.UserFields.Fields.Item("U_ServidorSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udServidor").Value;
 
                     Int32 lRetA = oTable.Add();
 
@@ -117,6 +137,9 @@ namespace BOneSolucoes.Forms
                     oTable.Code = "1";
                     oTable.Name = "1";
                     oTable.UserFields.Fields.Item("U_BOne_AtivoAprov").Value = CheckBox0.Checked ? "Y" : "N";
+                    oTable.UserFields.Fields.Item("U_UrlSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udUrl").Value;
+                    oTable.UserFields.Fields.Item("U_PortaSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udPorta").Value;
+                    oTable.UserFields.Fields.Item("U_ServidorSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udServidor").Value;
 
                     Int32 lRetU = oTable.Update();
 
@@ -139,5 +162,7 @@ namespace BOneSolucoes.Forms
                 }
             }
         }
+
+        
     }
 }

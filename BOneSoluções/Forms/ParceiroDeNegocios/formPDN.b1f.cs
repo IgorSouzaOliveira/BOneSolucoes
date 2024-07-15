@@ -1,4 +1,6 @@
-﻿using SAPbouiCOM.Framework;
+﻿using BOneSolucoes.Comonn;
+using BOneSolucoes.Models;
+using SAPbouiCOM.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,7 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
     [FormAttribute("ParceiroDeNegocios.formPDN", "Forms/ParceiroDeNegocios/formPDN.b1f")]
     class formPDN : UserFormBase
     {
+
         private SAPbouiCOM.Button Button1, btnIna, oFilter;
         private SAPbouiCOM.Matrix mtxData;
         private SAPbouiCOM.EditText oTextFilter;
@@ -16,9 +19,11 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
         private SAPbouiCOM.LinkedButton oLinkFilter;
         private SAPbouiCOM.ComboBox ComboBox0, ComboBox1;
         private SAPbobsCOM.Recordset Rst;
+        private SAPbouiCOM.OptionBtn radCliente, radForn;
         private SAPbobsCOM.BusinessPartners oBP;
-        private SAPbouiCOM.OptionBtn radCliente, radForn;    
-       
+
+        BusinessPartnerModel partners = new BusinessPartnerModel();
+
         public formPDN()
         {
         }
@@ -191,7 +196,6 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
         private void Button1_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
             SAPbouiCOM.DataTable oDT = this.UIAPIRawForm.DataSources.DataTables.Item("dtOCRD");
-            oBP = (SAPbobsCOM.BusinessPartners)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oBusinessPartners);
             SAPbouiCOM.ProgressBar oProgressBar = null;
 
             try
@@ -215,22 +219,16 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
                 }
 
                 oProgressBar = Application.SBO_Application.StatusBar.CreateProgressBar("", selectedBP.Count, false);
-                foreach (var list in selectedBP)
+                foreach (string oBP in selectedBP)
                 {
-                    if (oBP.GetByKey(list))
-                    {
-                        oBP.Valid = SAPbobsCOM.BoYesNoEnum.tYES;
-                        oBP.Frozen = SAPbobsCOM.BoYesNoEnum.tNO;
-                        int lRet = oBP.Update();
+                    partners.CardCode = oBP;
+                    partners.Valid = "tYES";
+                    partners.Frozen = "tNO";
 
-                        if (lRet != 0)
-                        {
-                            throw new Exception($"{Program.oCompany.GetLastErrorDescription()} - Código: {oBP.CardCode}");
-                        }
+                    SAPCommon.UpdateBP(partners);
 
-                        oProgressBar.Text = $"Cadastro: {oBP.CardCode}, ativado com sucesso.";
-                        oProgressBar.Value++;
-                    }
+                    oProgressBar.Text = $"Cadastro: {partners.CardCode}, ativado com sucesso.";
+                    oProgressBar.Value++;
                 }
             }
             catch (Exception ex)
@@ -239,28 +237,20 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
             }
             finally
             {
-                if (oBP != null)
-                {
-                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oBP);
-                }
-
                 if (oDT != null)
                 {
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(oDT);
                 }
-
                 if (oProgressBar != null)
                 {
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(oProgressBar);
                 }
-
-
             }
+
         }
         private void Button4_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
             SAPbouiCOM.DataTable oDT = this.UIAPIRawForm.DataSources.DataTables.Item("dtOCRD");
-            oBP = (SAPbobsCOM.BusinessPartners)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oBusinessPartners);
             SAPbouiCOM.ProgressBar oProgressBar = null;
 
             try
@@ -284,22 +274,17 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
                 }
 
                 oProgressBar = Application.SBO_Application.StatusBar.CreateProgressBar("", selectedBP.Count, false);
-                foreach (var list in selectedBP)
+                foreach (String oBP in selectedBP)
                 {
-                    if (oBP.GetByKey(list))
-                    {
-                        oBP.Valid = SAPbobsCOM.BoYesNoEnum.tNO;
-                        oBP.Frozen = SAPbobsCOM.BoYesNoEnum.tYES;
-                        int lRet = oBP.Update();
+                    partners.CardCode = oBP;
+                    partners.Valid = "tNO";
+                    partners.Frozen = "tYES";
 
-                        if (lRet != 0)
-                        {
-                            throw new Exception($"{Program.oCompany.GetLastErrorDescription()} - Código: {oBP.CardCode}");
-                        }
+                    SAPCommon.UpdateBP(partners);
 
-                        oProgressBar.Text = $"Cadastro: {oBP.CardCode}, desativado com sucesso.";
-                        oProgressBar.Value++;
-                    }
+                    oProgressBar.Text = $"Cadastro: {partners.CardCode}, desativado com sucesso.";
+                    oProgressBar.Value++;
+
                 }
             }
             catch (Exception ex)
@@ -308,23 +293,16 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
             }
             finally
             {
-                if (oBP != null)
-                {
-                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oBP);
-                }
-
                 if (oDT != null)
                 {
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(oDT);
                 }
-
                 if (oProgressBar != null)
                 {
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(oProgressBar);
                 }
-
-
             }
+
         }
     }
 }

@@ -1,7 +1,11 @@
-﻿using BOneSolucoes.Entities;
+﻿using BOneSolucoes.Comonn;
+using BOneSolucoes.Entities;
 using SAPbouiCOM.Framework;
 using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 
 namespace BOneSolucoes
 {
@@ -37,11 +41,10 @@ namespace BOneSolucoes
 
                 Application.SBO_Application.SetStatusBarMessage("Add-on BOne Soluções conectado com sucesso", SAPbouiCOM.BoMessageTime.bmt_Short, false);
 
-                MyMenu.CreateMenu();
+                MyMenu.CreateMenu();                
 
                 //Application.SBO_Application.ItemEvent += EventClass.SBO_Application_ItemEvent;
                 Application.SBO_Application.FormDataEvent += EventClass.GetDocEntryPed;
-
 
                 oApp.RegisterMenuEventHandler(MyMenu.SBO_Application_MenuEvent);
                 Application.SBO_Application.AppEvent += new SAPbouiCOM._IApplicationEvents_AppEventEventHandler(SBO_Application_AppEvent);
@@ -60,7 +63,7 @@ namespace BOneSolucoes
             switch (EventType)
             {
                 case SAPbouiCOM.BoAppEventTypes.aet_ShutDown:
-                    
+
                     System.Windows.Forms.Application.Exit();
                     menu.RemoveMenu();
                     break;
