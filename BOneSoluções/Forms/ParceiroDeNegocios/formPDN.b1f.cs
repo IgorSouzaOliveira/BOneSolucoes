@@ -20,7 +20,8 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
         private SAPbouiCOM.ComboBox ComboBox0, ComboBox1;
         private SAPbobsCOM.Recordset Rst;
         private SAPbouiCOM.OptionBtn radCliente, radForn;
-        private SAPbobsCOM.BusinessPartners oBP;
+        private SAPbouiCOM.EditText EditText0;
+        private SAPbouiCOM.StaticText StaticText0;
 
         BusinessPartnerModel partners = new BusinessPartnerModel();
 
@@ -50,6 +51,8 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
             this.ComboBox1 = ((SAPbouiCOM.ComboBox)(this.GetItem("Item_3").Specific));
             this.radCliente = ((SAPbouiCOM.OptionBtn)(this.GetItem("radCliente").Specific));
             this.radForn = ((SAPbouiCOM.OptionBtn)(this.GetItem("radForn").Specific));
+            this.EditText0 = ((SAPbouiCOM.EditText)(this.GetItem("edQtd").Specific));
+            this.StaticText0 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_2").Specific));
             this.OnCustomInitialize();
 
         }
@@ -97,6 +100,7 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
 
                 mtxData.LoadFromDataSource();
                 mtxData.AutoResizeColumns();
+                this.UIAPIRawForm.DataSources.UserDataSources.Item("udQtd").Value = mtxData.RowCount.ToString();
 
             }
             catch (Exception ex)
@@ -162,7 +166,8 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
             var cardCode = oDataTable.GetValue("CardCode", 0).ToString();
             this.UIAPIRawForm.DataSources.UserDataSources.Item("udCardCode").Value = cardCode;
 
-        }
+        }            
+
         private void oFilter_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
             try
@@ -178,6 +183,7 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
                 this.UIAPIRawForm.DataSources.DataTables.Item("dtOCRD").ExecuteQuery(query);
                 mtxData.LoadFromDataSource();
                 mtxData.AutoResizeColumns();
+                this.UIAPIRawForm.DataSources.UserDataSources.Item("udQtd").Value = mtxData.RowCount.ToString();
 
 
             }
@@ -197,7 +203,6 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
         {
             SAPbouiCOM.DataTable oDT = this.UIAPIRawForm.DataSources.DataTables.Item("dtOCRD");
             SAPbouiCOM.ProgressBar oProgressBar = null;
-
             try
             {
 
@@ -217,7 +222,6 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
                         selectedBP.Add(oDT.GetValue("CardCode", i).ToString());
                     }
                 }
-
                 oProgressBar = Application.SBO_Application.StatusBar.CreateProgressBar("", selectedBP.Count, false);
                 foreach (string oBP in selectedBP)
                 {
@@ -225,9 +229,10 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
                     partners.Valid = "tYES";
                     partners.Frozen = "tNO";
 
-                    SAPCommon.UpdateBP(partners);
+                    string result = SAPCommon.UpdateBP(partners);
 
-                    oProgressBar.Text = $"Cadastro: {partners.CardCode}, ativado com sucesso.";
+                    if (result == "Sucesso")
+                        oProgressBar.Text = $"Parceiro de négocios: {partners.CardCode}, atualizado com sucesso.";
                     oProgressBar.Value++;
                 }
             }
@@ -241,10 +246,12 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
                 {
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(oDT);
                 }
+
                 if (oProgressBar != null)
                 {
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(oProgressBar);
                 }
+
             }
 
         }
@@ -280,10 +287,11 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
                     partners.Valid = "tNO";
                     partners.Frozen = "tYES";
 
-                    SAPCommon.UpdateBP(partners);
+                    var result = SAPCommon.UpdateBP(partners);
 
-                    oProgressBar.Text = $"Cadastro: {partners.CardCode}, desativado com sucesso.";
-                    oProgressBar.Value++;
+                    if (result == "Sucesso")
+                        oProgressBar.Text = $"Parceiro de négocios: {partners.CardCode}, atualizado com sucesso.";
+                        oProgressBar.Value++;
 
                 }
             }
@@ -301,8 +309,11 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
                 {
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(oProgressBar);
                 }
+
             }
 
         }
+
+        
     }
 }

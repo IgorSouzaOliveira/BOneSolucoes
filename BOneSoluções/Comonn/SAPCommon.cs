@@ -40,7 +40,7 @@ namespace BOneSolucoes.Comonn
             }
             catch (Exception ex)
             {
-                Application.SBO_Application.MessageBox(ex.Message,1,"Ok","Cancelar");
+                Application.SBO_Application.MessageBox(ex.Message, 1, "Ok", "Cancelar");
             }
         }
 
@@ -81,10 +81,12 @@ namespace BOneSolucoes.Comonn
             }
         }
 
-        public static void UpdateBP(BusinessPartnerModel oBP)
+        public static String UpdateBP(BusinessPartnerModel oBP)
         {
             try
             {
+                
+
                 var client = new RestClient(_slAddress);
                 var request = new RestRequest($"/BusinessPartners('{oBP.CardCode}')", Method.PATCH);
 
@@ -94,26 +96,30 @@ namespace BOneSolucoes.Comonn
 
                 CookieContainer cookiecon = new CookieContainer();
                 cookiecon.Add(new Cookie("B1SESSION", B1Session, "/b1s/v1", _slServer));
+                client.CookieContainer = cookiecon;
 
                 ServicePointManager.ServerCertificateValidationCallback += new System.Net.Security.RemoteCertificateValidationCallback(ValidateServerCertificate);
 
                 IRestResponse response = client.Execute(request);
 
+                
                 if (response.StatusCode == HttpStatusCode.NoContent)
                 {
-                    Application.SBO_Application.StatusBar.SetText($"Parceiro de négocios: {oBP.CardCode}, atualizado com sucesso.");
+                    return "Sucesso";     
                 }
                 else
                 {
                     dynamic ret = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(response.Content);
-                    Application.SBO_Application.MessageBox(ret.error.message.value,1,"Ok","Cancelar");
+                    throw new Exception(ret.error.message.value.ToString()); 
                 }
 
             }
             catch (Exception ex)
             {
-                Application.SBO_Application.MessageBox($"Service Layer: {ex.Message}", 1, "Ok", "Cancelar");
+                Application.SBO_Application.MessageBox($"Service Layer: {oBP.CardCode} - {ex.Message}", 1, "Ok", "Cancelar");
+                return null;
             }
+            
         }
 
 

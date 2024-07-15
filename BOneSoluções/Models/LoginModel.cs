@@ -22,7 +22,7 @@ namespace BOneSolucoes.Models
         {           
             CompanyDB = Program.oCompany.CompanyDB;
             UserName = Program.oCompany.UserName;
-            Password = "1234";
+            Password = "3060";
             Language = "19"; //ln_Portuguese = 19
         }
     }
