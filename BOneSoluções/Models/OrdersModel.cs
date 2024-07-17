@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace BOneSolucoes.Models
 {
-    class InvoiceModel
+    class OrdersModel
+
     {
-        public String DocEntry {  get; set; }
+        public String DocEntry { get; set; }
         public String SequenceSerial { get; set; }
         public String CardCode { get; set; }
         public String CardName { get; set; }
@@ -17,6 +18,7 @@ namespace BOneSolucoes.Models
         public int PaymentGroupCode { get; set; }
         public String PaymentMethod { get; set; }
         public int SalesPersonCode { get; set; }
-        public List<ItemModelInvoice> DocumentLines { get; set; }
+        public List<ItemModel> DocumentLines { get; set; }
+
     }
 }

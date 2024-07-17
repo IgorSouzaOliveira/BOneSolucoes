@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace BOneSolucoes.Models
 {
-    class ItemModel
+    class ItemModelInvoice
     {
-        public String LineNum { get; set; }
         public String ItemCode { get; set; }
         public double Quantity { get; set; }
         public double Price { get; set; }
@@ -16,7 +15,5 @@ namespace BOneSolucoes.Models
         public String BaseType { get; set; }
         public String BaseEntry { get; set; }
         public String BaseLine { get; set; }
-
-        //List<BatchNumbersModel> BatchNumbers = new List<BatchNumbersModel>();
     }
 }

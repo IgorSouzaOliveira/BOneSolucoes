@@ -107,7 +107,9 @@
     <Compile Include="Models\BusinessPartnerModel.cs" />
     <Compile Include="Models\InvoiceModel.cs" />
     <Compile Include="Models\ItemModel.cs" />
+    <Compile Include="Models\ItemModelInvoice.cs" />
     <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\OrdersModel.cs" />
     <Compile Include="Resources\Resource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

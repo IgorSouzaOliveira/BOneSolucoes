@@ -257,8 +257,9 @@ namespace BOneSolucoes.Forms.Vendas
 
                 foreach (var list in selectedPed)
                 {
-                     Invoice.AddInvoice(Convert.ToInt32(list));
-                  
+                    
+                    Invoice.AddInvoice(Convert.ToInt32(list));
+
 
                 }
 
@@ -280,8 +281,6 @@ namespace BOneSolucoes.Forms.Vendas
                 {
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(oProgressBar);
                 }
-
-                LoadMatrix();
             }
 
         }

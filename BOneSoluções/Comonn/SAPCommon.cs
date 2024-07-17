@@ -119,6 +119,44 @@ namespace BOneSolucoes.Comonn
 
         }
 
+        /*Metodo para pegar informações do pedido*/
+        public static OrdersModel GetOrders(string pedido)
+        {
+            try
+            {
+                var client = new RestClient(_slAddress);
+                var request = new RestRequest($"/Orders({pedido})", Method.GET);
+
+                CookieContainer cookiecon = new CookieContainer();
+                cookiecon.Add(new Cookie("B1SESSION", B1Session, "/b1s/v1", _slServer));
+                client.CookieContainer = cookiecon;
+
+                ServicePointManager.ServerCertificateValidationCallback += new System.Net.Security.RemoteCertificateValidationCallback(ValidateServerCertificate);
+
+                IRestResponse response = client.Execute(request);
+
+                OrdersModel orderRetorno = new OrdersModel();
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    orderRetorno = Newtonsoft.Json.JsonConvert.DeserializeObject<OrdersModel>(response.Content);
+                }
+                else
+                {
+                    dynamic ret = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(response.Content);
+                    throw new Exception(ret.error.message.value.ToString());
+                }
+
+                return orderRetorno;
+
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                return null;
+            }
+        }
+
         /*Metodo para faturar pedidos*/
         public static void AddInvoice(InvoiceModel oInvoice)
         {
@@ -155,9 +193,7 @@ namespace BOneSolucoes.Comonn
             {
                 Application.SBO_Application.MessageBox(ex.Message,1,"Ok","Cancelar");
             }
-        }
-
-
+        }        
 
         public static bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
