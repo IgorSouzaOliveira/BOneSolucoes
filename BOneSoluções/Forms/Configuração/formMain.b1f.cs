@@ -21,6 +21,10 @@ namespace BOneSolucoes.Forms
         private SAPbouiCOM.EditText editPort;
         private SAPbouiCOM.StaticText StaticText4;
         private SAPbouiCOM.EditText edServer;
+        private SAPbouiCOM.StaticText StaticText1;
+        private SAPbouiCOM.EditText EditText0;
+        private SAPbouiCOM.EditText EditText1;
+        private SAPbouiCOM.StaticText StaticText2;
         public formMain()
         {
         }
@@ -44,6 +48,10 @@ namespace BOneSolucoes.Forms
             this.editPort = ((SAPbouiCOM.EditText)(this.GetItem("editPort").Specific));
             this.StaticText4 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_13").Specific));
             this.edServer = ((SAPbouiCOM.EditText)(this.GetItem("edServer").Specific));
+            this.StaticText1 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_3").Specific));
+            this.EditText0 = ((SAPbouiCOM.EditText)(this.GetItem("edUsuario").Specific));
+            this.EditText1 = ((SAPbouiCOM.EditText)(this.GetItem("edPass").Specific));
+            this.StaticText2 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_9").Specific));
             this.OnCustomInitialize();
 
         }
@@ -73,8 +81,10 @@ namespace BOneSolucoes.Forms
                     this.UIAPIRawForm.DataSources.UserDataSources.Item("udUrl").Value = oTable.UserFields.Fields.Item("U_UrlSL").Value.ToString();
                     this.UIAPIRawForm.DataSources.UserDataSources.Item("udPorta").Value = oTable.UserFields.Fields.Item("U_PortaSL").Value.ToString();
                     this.UIAPIRawForm.DataSources.UserDataSources.Item("udServidor").Value = oTable.UserFields.Fields.Item("U_ServidorSL").Value.ToString();
+                    this.UIAPIRawForm.DataSources.UserDataSources.Item("udUser").Value = oTable.UserFields.Fields.Item("U_UsuarioSL").Value.ToString();
+                    this.UIAPIRawForm.DataSources.UserDataSources.Item("udPass").Value = oTable.UserFields.Fields.Item("U_SenhaSL").Value.ToString();
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -124,6 +134,8 @@ namespace BOneSolucoes.Forms
                     oTable.UserFields.Fields.Item("U_UrlSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udUrl").Value;
                     oTable.UserFields.Fields.Item("U_PortaSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udPorta").Value;
                     oTable.UserFields.Fields.Item("U_ServidorSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udServidor").Value;
+                    oTable.UserFields.Fields.Item("U_UsuarioSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udUser").Value;
+                    oTable.UserFields.Fields.Item("U_SenhaSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udPass").Value;
 
                     Int32 lRetA = oTable.Add();
 
@@ -140,6 +152,8 @@ namespace BOneSolucoes.Forms
                     oTable.UserFields.Fields.Item("U_UrlSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udUrl").Value;
                     oTable.UserFields.Fields.Item("U_PortaSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udPorta").Value;
                     oTable.UserFields.Fields.Item("U_ServidorSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udServidor").Value;
+                    oTable.UserFields.Fields.Item("U_UsuarioSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udUser").Value;
+                    oTable.UserFields.Fields.Item("U_SenhaSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udPass").Value;
 
                     Int32 lRetU = oTable.Update();
 
@@ -163,6 +177,6 @@ namespace BOneSolucoes.Forms
             }
         }
 
-        
+
     }
 }

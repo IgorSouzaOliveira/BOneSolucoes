@@ -43,7 +43,6 @@ namespace BOneSolucoes.Comonn
                 Application.SBO_Application.MessageBox(ex.Message, 1, "Ok", "Cancelar");
             }
         }
-
         public static String SAPConnect()
         {
             try
@@ -70,22 +69,20 @@ namespace BOneSolucoes.Comonn
                 }
                 else
                 {
-                    Application.SBO_Application.MessageBox($"Service Layer: {rest.StatusDescription}", 1, "Ok", "Cancelar");
+                    Application.SBO_Application.StatusBar.SetText($"Service Layer: {rest.StatusDescription}", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
                     return null;
                 }
             }
             catch (Exception ex)
             {
-                Application.SBO_Application.MessageBox($"Service Layer: {ex.Message}", 1, "Ok", "Cancelar");
+                Application.SBO_Application.StatusBar.SetText($"Service Layer: {ex.Message}", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
                 return null;
             }
         }
-
         public static String UpdateBP(BusinessPartnerModel oBP)
         {
             try
             {
-                
 
                 var client = new RestClient(_slAddress);
                 var request = new RestRequest($"/BusinessPartners('{oBP.CardCode}')", Method.PATCH);
@@ -102,15 +99,15 @@ namespace BOneSolucoes.Comonn
 
                 IRestResponse response = client.Execute(request);
 
-                
+
                 if (response.StatusCode == HttpStatusCode.NoContent)
                 {
-                    return "Sucesso";     
+                    return "Sucesso";
                 }
                 else
                 {
                     dynamic ret = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(response.Content);
-                    throw new Exception(ret.error.message.value.ToString()); 
+                    throw new Exception(ret.error.message.value.ToString());
                 }
 
             }
@@ -119,8 +116,47 @@ namespace BOneSolucoes.Comonn
                 Application.SBO_Application.MessageBox($"Service Layer: {oBP.CardCode} - {ex.Message}", 1, "Ok", "Cancelar");
                 return null;
             }
-            
+
         }
+
+        /*Metodo para faturar pedidos*/
+        public static void AddInvoice(InvoiceModel oInvoice)
+        {
+            try
+            {
+                var client = new RestClient(_slAddress);
+                var request = new RestRequest($"/Invoices", Method.POST);
+
+                var body = Newtonsoft.Json.JsonConvert.SerializeObject(oInvoice);
+                request.AddHeader("Content-Type", "application/json");
+                request.AddParameter("application/json", body, ParameterType.RequestBody);
+
+                CookieContainer cookiecon = new CookieContainer();
+                cookiecon.Add(new Cookie("B1SESSION", B1Session, "/b1s/v1", _slServer));
+                client.CookieContainer = cookiecon;
+
+                ServicePointManager.ServerCertificateValidationCallback += new System.Net.Security.RemoteCertificateValidationCallback(ValidateServerCertificate);
+
+                IRestResponse response = client.Execute(request);
+
+                InvoiceModel notaRetorno = new InvoiceModel();
+                if (response.StatusCode != HttpStatusCode.Created)
+                {
+                    dynamic ret = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(response.Content);
+                    throw new Exception($"Erro ao Gerar Nota Fiscal de Saida. {Environment.NewLine} Detalhes: {ret.error.message.value.ToString()}");
+                }
+
+                notaRetorno = Newtonsoft.Json.JsonConvert.DeserializeObject<InvoiceModel>(response.Content);
+                Application.SBO_Application.MessageBox($"Nota Fiscal de Saida Gerada com sucesso. {Environment.NewLine} Nº Documento: {notaRetorno.DocEntry} {Environment.NewLine} Nº Nota Fiscal: {notaRetorno.SequenceSerial}");
+
+
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.MessageBox(ex.Message,1,"Ok","Cancelar");
+            }
+        }
+
 
 
         public static bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)

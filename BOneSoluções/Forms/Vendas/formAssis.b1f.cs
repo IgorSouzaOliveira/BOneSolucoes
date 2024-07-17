@@ -257,13 +257,8 @@ namespace BOneSolucoes.Forms.Vendas
 
                 foreach (var list in selectedPed)
                 {
-                    var retorno = Invoice.AddInvoice(Convert.ToInt32(list));
-
-                    if (retorno != null)
-                    {
-                        oProgressBar.Text = retorno;
-                        oProgressBar.Value++;
-                    }
+                     Invoice.AddInvoice(Convert.ToInt32(list));
+                  
 
                 }
 

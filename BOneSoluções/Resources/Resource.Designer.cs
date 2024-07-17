@@ -71,7 +71,15 @@ namespace BOneSolucoes.Resources {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT T0.&quot;U_emitCNPJ&quot;, T0.&quot;U_enderEmitIE&quot;, T0.&quot;U_emitxNome&quot;, T0.&quot;U_prodcProd&quot; FROM [@BONEXMLDATA]	T0.
+        ///   Consulta uma cadeia de caracteres localizada semelhante a DECLARE @ChaveAcesso AS NVARCHAR(MAX) = &apos;{0}&apos;
+        ///
+        ///
+        ///SELECT
+        ///
+        ///   	&apos;&apos; AS [Check],
+        ///	&apos;CardCode&apos; = (SELECT TOP 1 A.CardCode FROM CRD7 A WHERE A.&quot;TaxId0&quot; = T0.U_emitCNPJ AND A.CardCode in (SELECT B.CardCode FROM OSCN B) AND LEFT(A.CardCode,2) IN (&apos;FS&apos;,&apos;FR&apos;)),
+        ///	&apos;CardName&apos; = (SELECT B.CardName FROM OCRD B WHERE B.CardCode = (SELECT TOP 1 A.CardCode FROM CRD7 A WHERE A.&quot;TaxId0&quot; = T0.U_emitCNPJ AND LEFT(A.CardCode,2) IN (&apos;FS&apos;,&apos;FR&apos;)) AND B.CardCode in (SELECT C.CardCode FROM OSCN C)),
+        ///    &apos;CNPJ&apos; = T0.&quot;U_emitCNPJ&quot;,  [o restante da cadeia de caracteres foi truncado]&quot;;.
         /// </summary>
         internal static string CarregarXmlImp {
             get {
@@ -242,6 +250,36 @@ namespace BOneSolucoes.Resources {
         internal static string menuRemove {
             get {
                 return ResourceManager.GetString("menuRemove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a DECLARE @DocEntry AS NVARCHAR(50) = &apos;{0}&apos;
+        ///
+        ///SELECT 
+        ///	T0.&quot;CardCode&quot;, 
+        ///	T0.&quot;CardName&quot;, 
+        ///	T0.&quot;BPLId&quot;,
+        ///	T0.&quot;Comments&quot;, 
+        ///	T0.&quot;GroupNum&quot;, 
+        ///	T0.&quot;PeyMethod&quot;, 
+        ///	T0.SlpCode,
+        ///	T1.&quot;LineNum&quot;, 
+        ///	T1.&quot;ItemCode&quot;, 
+        ///	T1.&quot;Quantity&quot;,
+        ///	T1.&quot;Price&quot;, 
+        ///	T1.&quot;Usage&quot;, 
+        ///	T1.&quot;BaseType&quot;, 
+        ///	T1.&quot;BaseEntry&quot;, 
+        ///	T1.&quot;BaseLine&quot;
+        ///		
+        ///FROM [ORDR] T0 
+        ///JOIN [RDR1] T1 ON T1.DocEntry = T0.DocEntry
+        ///WHERE T0.&quot;DocEntry&quot; = @DocEntry.
+        /// </summary>
+        internal static string PedidosFaturar {
+            get {
+                return ResourceManager.GetString("PedidosFaturar", resourceCulture);
             }
         }
     }
