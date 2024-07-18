@@ -27,12 +27,17 @@ namespace BOneSolucoes.Entities
                 invoice.PaymentGroupCode = dataOrder.PaymentGroupCode;
                 invoice.PaymentMethod = dataOrder.PaymentMethod;
                 invoice.SalesPersonCode = dataOrder.SalesPersonCode;
-
+                
+                
                 invoice.DocumentLines = new List<ItemModelInvoice>();
+                
+
 
                 foreach (var docLine in dataOrder.DocumentLines)
                 {
                     ItemModelInvoice item = new ItemModelInvoice();
+                    item.BatchNumbers = new List<BatchNumbersInvoiceModel>();
+                    BatchNumbersInvoiceModel batchNumbers = new BatchNumbersInvoiceModel();
 
                     item.ItemCode = docLine.ItemCode;
                     item.Quantity = docLine.Quantity;
@@ -41,6 +46,16 @@ namespace BOneSolucoes.Entities
                     item.BaseType = "17";
                     item.BaseEntry = dataOrder.DocEntry;
                     item.BaseLine = docLine.LineNum;
+
+                    foreach (var lotePed in docLine.BatchNumbers)
+                    {
+                        batchNumbers.BatchNumber = lotePed.BatchNumber;
+                        batchNumbers.AddmisionDate = lotePed.AddmisionDate;
+                        batchNumbers.Quantity = lotePed.Quantity;
+                        batchNumbers.ItemCode = lotePed.ItemCode;
+                        item.BatchNumbers.Add(batchNumbers);
+                    }               
+
                     invoice.DocumentLines.Add(item);
 
                 }

@@ -18,7 +18,7 @@ namespace BOneSolucoes.Models
         public int PaymentGroupCode { get; set; }
         public String PaymentMethod { get; set; }
         public int SalesPersonCode { get; set; }
-        public List<ItemModel> DocumentLines { get; set; }
+        public List<ItemModelOrders> DocumentLines { get; set; }       
 
     }
 }

@@ -15,5 +15,7 @@ namespace BOneSolucoes.Models
         public String BaseType { get; set; }
         public String BaseEntry { get; set; }
         public String BaseLine { get; set; }
+        public List<BatchNumbersInvoiceModel> BatchNumbers { get; set; }
+       
     }
 }

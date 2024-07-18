@@ -125,7 +125,7 @@ namespace BOneSolucoes.Comonn
             try
             {
                 var client = new RestClient(_slAddress);
-                var request = new RestRequest($"/Orders({pedido})", Method.GET);
+                var request = new RestRequest($"/Orders({pedido})?$select=DocEntry,SequenceSerial,CardCode,CardName,BPL_IDAssignedToInvoice,Comments,PaymentGroupCode,PaymentMethod,SalesPersonCode,DocumentLines", Method.GET);
 
                 CookieContainer cookiecon = new CookieContainer();
                 cookiecon.Add(new Cookie("B1SESSION", B1Session, "/b1s/v1", _slServer));
@@ -137,15 +137,13 @@ namespace BOneSolucoes.Comonn
 
                 OrdersModel orderRetorno = new OrdersModel();
 
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    orderRetorno = Newtonsoft.Json.JsonConvert.DeserializeObject<OrdersModel>(response.Content);
-                }
-                else
+                if (response.StatusCode != HttpStatusCode.OK)
                 {
                     dynamic ret = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(response.Content);
                     throw new Exception(ret.error.message.value.ToString());
                 }
+
+                orderRetorno = Newtonsoft.Json.JsonConvert.DeserializeObject<OrdersModel>(response.Content);
 
                 return orderRetorno;
 
@@ -191,15 +189,13 @@ namespace BOneSolucoes.Comonn
             }
             catch (Exception ex)
             {
-                Application.SBO_Application.MessageBox(ex.Message,1,"Ok","Cancelar");
+                Application.SBO_Application.MessageBox(ex.Message, 1, "Ok", "Cancelar");
             }
-        }        
-
+        }
         public static bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             return true;
         }
-
 
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BOneSolucoes.Forms.Vendas
 {
@@ -254,16 +255,14 @@ namespace BOneSolucoes.Forms.Vendas
                 }
 
                 oProgressBar = Application.SBO_Application.StatusBar.CreateProgressBar("", selectedPed.Count, false);
+                oProgressBar.Text = "Gerando Nota Fiscal de Saida. Aguarde...";
 
                 foreach (var list in selectedPed)
                 {
                     
                     Invoice.AddInvoice(Convert.ToInt32(list));
-
-
+                    oProgressBar.Value++;
                 }
-
-                Application.SBO_Application.MessageBox("Processo finalizado.");
 
             }
             catch (Exception ex)
@@ -276,13 +275,14 @@ namespace BOneSolucoes.Forms.Vendas
                 {
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(oDT);
                 }
-
                 if (oProgressBar != null)
                 {
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(oProgressBar);
                 }
+
             }
 
         }
+        
     }
 }
