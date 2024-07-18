@@ -30,6 +30,8 @@ namespace BOneSolucoes.Forms.Vendas
         private SAPbouiCOM.ComboBox ComboBox1;
         private SAPbouiCOM.LinkedButton LinkedButton0;
         private SAPbouiCOM.Button Button3;
+        private SAPbouiCOM.StaticText StaticText7;
+        private SAPbouiCOM.EditText edQuant;
         public formAssis()
         {
         }
@@ -61,6 +63,8 @@ namespace BOneSolucoes.Forms.Vendas
             this.LinkedButton0 = ((SAPbouiCOM.LinkedButton)(this.GetItem("Item_19").Specific));
             this.Button3 = ((SAPbouiCOM.Button)(this.GetItem("Item_20").Specific));
             this.Button3.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.Button3_PressedAfter);
+            this.StaticText7 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_0").Specific));
+            this.edQuant = ((SAPbouiCOM.EditText)(this.GetItem("edQuant").Specific));
             this.OnCustomInitialize();
 
         }
@@ -98,6 +102,10 @@ namespace BOneSolucoes.Forms.Vendas
                 Matrix0.Columns.Item("colDocT").DataBind.Bind("dtAssis", "Total do documento");
                 Matrix0.Columns.Item("colObs").DataBind.Bind("dtAssis", "Observações");
 
+                Matrix0.LoadFromDataSource();
+                Matrix0.AutoResizeColumns();
+
+                edQuant.Value = Matrix0.RowCount.ToString();
 
             }
             catch (Exception ex)
@@ -106,8 +114,7 @@ namespace BOneSolucoes.Forms.Vendas
             }
             finally
             {
-                Matrix0.LoadFromDataSource();
-                Matrix0.AutoResizeColumns();
+                
                 this.UIAPIRawForm.Freeze(false);
             }
 
@@ -203,6 +210,7 @@ namespace BOneSolucoes.Forms.Vendas
                 this.UIAPIRawForm.DataSources.DataTables.Item("dtAssis").ExecuteQuery(query);
                 Matrix0.LoadFromDataSource();
                 Matrix0.AutoResizeColumns();
+                edQuant.Value = Matrix0.RowCount.ToString();
             }
             catch (Exception ex)
             {
@@ -283,6 +291,7 @@ namespace BOneSolucoes.Forms.Vendas
             }
 
         }
-        
+
+       
     }
 }

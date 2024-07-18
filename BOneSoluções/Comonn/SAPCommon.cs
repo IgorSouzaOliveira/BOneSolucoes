@@ -79,8 +79,13 @@ namespace BOneSolucoes.Comonn
                 return null;
             }
         }
+
+        /*Metodo para atualizar cadastro de PN*/
         public static String UpdateBP(BusinessPartnerModel oBP)
         {
+            if (string.IsNullOrEmpty(B1Session))           
+                SAPConnect();            
+
             try
             {
 
@@ -122,10 +127,13 @@ namespace BOneSolucoes.Comonn
         /*Metodo para pegar informações do pedido*/
         public static OrdersModel GetOrders(string pedido)
         {
+            if (string.IsNullOrEmpty(B1Session))
+                SAPConnect();
+
             try
             {
                 var client = new RestClient(_slAddress);
-                var request = new RestRequest($"/Orders({pedido})?$select=DocEntry,SequenceSerial,CardCode,CardName,BPL_IDAssignedToInvoice,Comments,PaymentGroupCode,PaymentMethod,SalesPersonCode,DocumentLines", Method.GET);
+                var request = new RestRequest($"/Orders({pedido})", Method.GET);
 
                 CookieContainer cookiecon = new CookieContainer();
                 cookiecon.Add(new Cookie("B1SESSION", B1Session, "/b1s/v1", _slServer));
@@ -158,6 +166,9 @@ namespace BOneSolucoes.Comonn
         /*Metodo para faturar pedidos*/
         public static void AddInvoice(InvoiceModel oInvoice)
         {
+            if (string.IsNullOrEmpty(B1Session))
+                SAPConnect();
+
             try
             {
                 var client = new RestClient(_slAddress);
@@ -189,7 +200,7 @@ namespace BOneSolucoes.Comonn
             }
             catch (Exception ex)
             {
-                Application.SBO_Application.MessageBox(ex.Message, 1, "Ok", "Cancelar");
+                Application.SBO_Application.StatusBar.SetText(ex.Message,SAPbouiCOM.BoMessageTime.bmt_Short,SAPbouiCOM.BoStatusBarMessageType.smt_Error);
             }
         }
         public static bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)

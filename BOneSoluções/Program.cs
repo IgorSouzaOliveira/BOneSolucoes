@@ -35,9 +35,7 @@ namespace BOneSolucoes
                 }
                 oCompany = (SAPbobsCOM.Company)Application.SBO_Application.Company.GetDICompany();
                 Sbo_App = Application.SBO_Application;
-
-                SAPCommon.SAPConnect();
-
+                                
                 Menu MyMenu = new Menu();
                 MyMenu.RemoveMenu();
 

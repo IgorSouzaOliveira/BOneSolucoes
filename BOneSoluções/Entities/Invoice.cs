@@ -37,7 +37,7 @@ namespace BOneSolucoes.Entities
                 {
                     ItemModelInvoice item = new ItemModelInvoice();
                     item.BatchNumbers = new List<BatchNumbersInvoiceModel>();
-                    BatchNumbersInvoiceModel batchNumbers = new BatchNumbersInvoiceModel();
+                    
 
                     item.ItemCode = docLine.ItemCode;
                     item.Quantity = docLine.Quantity;
@@ -49,6 +49,8 @@ namespace BOneSolucoes.Entities
 
                     foreach (var lotePed in docLine.BatchNumbers)
                     {
+                        BatchNumbersInvoiceModel batchNumbers = new BatchNumbersInvoiceModel();
+
                         batchNumbers.BatchNumber = lotePed.BatchNumber;
                         batchNumbers.AddmisionDate = lotePed.AddmisionDate;
                         batchNumbers.Quantity = lotePed.Quantity;
