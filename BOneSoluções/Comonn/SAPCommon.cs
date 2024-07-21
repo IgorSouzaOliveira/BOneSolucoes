@@ -61,10 +61,10 @@ namespace BOneSolucoes.Comonn
 
                 IRestResponse rest = client.Execute(request);
 
-                B1Session = rest.Cookies.FirstOrDefault()?.Value;
+                B1Session = rest.Cookies.FirstOrDefault()?.Value;                
 
                 if (rest.StatusCode == HttpStatusCode.OK)
-                {
+                {                    
                     return B1Session;
                 }
                 else
@@ -164,7 +164,7 @@ namespace BOneSolucoes.Comonn
         }
 
         /*Metodo para faturar pedidos*/
-        public static void AddInvoice(InvoiceModel oInvoice)
+        public static InvoiceModel AddInvoice(InvoiceModel oInvoice)
         {
             if (string.IsNullOrEmpty(B1Session))
                 SAPConnect();
@@ -196,11 +196,12 @@ namespace BOneSolucoes.Comonn
                 notaRetorno = Newtonsoft.Json.JsonConvert.DeserializeObject<InvoiceModel>(response.Content);
                 Application.SBO_Application.MessageBox($"Nota Fiscal de Saida Gerada com sucesso. {Environment.NewLine} Nº Documento: {notaRetorno.DocEntry} {Environment.NewLine} Nº Nota Fiscal: {notaRetorno.SequenceSerial}");
 
-
+                return notaRetorno;
             }
             catch (Exception ex)
             {
-                Application.SBO_Application.StatusBar.SetText(ex.Message,SAPbouiCOM.BoMessageTime.bmt_Short,SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                Application.SBO_Application.MessageBox(ex.Message,1,"Ok","Cancelar");
+                return null;
             }
         }
         public static bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)

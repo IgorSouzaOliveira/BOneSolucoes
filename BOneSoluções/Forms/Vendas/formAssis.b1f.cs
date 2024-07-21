@@ -1,4 +1,6 @@
-﻿using BOneSolucoes.Entities;
+﻿using BOneSolucoes.Comonn;
+using BOneSolucoes.Entities;
+using BOneSolucoes.Models;
 using SAPbouiCOM.Framework;
 using System;
 using System.Collections.Generic;
@@ -114,7 +116,7 @@ namespace BOneSolucoes.Forms.Vendas
             }
             finally
             {
-                
+
                 this.UIAPIRawForm.Freeze(false);
             }
 
@@ -256,20 +258,70 @@ namespace BOneSolucoes.Forms.Vendas
                 {
                     var selected = oDT.GetValue("Selecionar", i).ToString();
 
-                    if (selected == "Y")
-                    {
-                        selectedPed.Add(oDT.GetValue("Nº Pedido", i).ToString());
-                    }
+                    if (selected == "N" || selected == "")
+                        continue;
+
+                    selectedPed.Add(oDT.GetValue("Nº Pedido", i).ToString());
+
                 }
 
                 oProgressBar = Application.SBO_Application.StatusBar.CreateProgressBar("", selectedPed.Count, false);
                 oProgressBar.Text = "Gerando Nota Fiscal de Saida. Aguarde...";
-
                 foreach (var list in selectedPed)
                 {
-                    
-                    Invoice.AddInvoice(Convert.ToInt32(list));
-                    oProgressBar.Value++;
+                    var dataOrder = SAPCommon.GetOrders(list);
+
+                    if (dataOrder == null)
+                        return;
+
+                    InvoiceModel invoice = new InvoiceModel();
+
+                    invoice.CardCode = dataOrder.CardCode;
+                    invoice.CardName = dataOrder.CardName;
+                    invoice.BPL_IDAssignedToInvoice = dataOrder.BPL_IDAssignedToInvoice;
+                    invoice.Comments = dataOrder.Comments;
+                    invoice.PaymentGroupCode = dataOrder.PaymentGroupCode;
+                    invoice.PaymentMethod = dataOrder.PaymentMethod;
+                    invoice.SalesPersonCode = dataOrder.SalesPersonCode;
+
+                    invoice.DocumentLines = new List<ItemModelInvoice>();
+
+
+                    foreach (var docLine in dataOrder.DocumentLines)
+                    {
+                        ItemModelInvoice item = new ItemModelInvoice();
+                        item.BatchNumbers = new List<BatchNumbersInvoiceModel>();
+
+
+                        item.ItemCode = docLine.ItemCode;
+                        item.Quantity = docLine.Quantity;
+                        item.Price = docLine.Price;
+                        item.Usage = docLine.Usage;
+                        item.BaseType = "17";
+                        item.BaseEntry = dataOrder.DocEntry;
+                        item.BaseLine = docLine.LineNum;
+
+                        foreach (var lotePed in docLine.BatchNumbers)
+                        {
+                            BatchNumbersInvoiceModel batchNumbers = new BatchNumbersInvoiceModel();
+
+                            batchNumbers.BatchNumber = lotePed.BatchNumber;
+                            batchNumbers.AddmisionDate = lotePed.AddmisionDate;
+                            batchNumbers.Quantity = lotePed.Quantity;
+                            batchNumbers.ItemCode = lotePed.ItemCode;
+                            item.BatchNumbers.Add(batchNumbers);
+                        }
+
+                        invoice.DocumentLines.Add(item);
+
+                    }
+
+                    var result = SAPCommon.AddInvoice(invoice);
+
+                    if (result != null)
+                    {                        
+                        oProgressBar.Value++;
+                    }
                 }
 
             }
@@ -288,10 +340,11 @@ namespace BOneSolucoes.Forms.Vendas
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(oProgressBar);
                 }
 
+                LoadMatrix();
             }
 
         }
 
-       
+
     }
 }
