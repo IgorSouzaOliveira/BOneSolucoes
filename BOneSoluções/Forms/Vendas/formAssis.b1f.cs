@@ -237,7 +237,6 @@ namespace BOneSolucoes.Forms.Vendas
 
 
         }
-
         private void Button2_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
 
@@ -301,15 +300,18 @@ namespace BOneSolucoes.Forms.Vendas
                         item.BaseEntry = dataOrder.DocEntry;
                         item.BaseLine = docLine.LineNum;
 
-                        foreach (var lotePed in docLine.BatchNumbers)
+                        if (docLine.BatchNumbers.Count > 0)
                         {
-                            BatchNumbersInvoiceModel batchNumbers = new BatchNumbersInvoiceModel();
+                            foreach (var lotePed in docLine.BatchNumbers)
+                            {
+                                BatchNumbersInvoiceModel batchNumbers = new BatchNumbersInvoiceModel();
 
-                            batchNumbers.BatchNumber = lotePed.BatchNumber;
-                            batchNumbers.AddmisionDate = lotePed.AddmisionDate;
-                            batchNumbers.Quantity = lotePed.Quantity;
-                            batchNumbers.ItemCode = lotePed.ItemCode;
-                            item.BatchNumbers.Add(batchNumbers);
+                                batchNumbers.BatchNumber = lotePed.BatchNumber;
+                                batchNumbers.AddmisionDate = lotePed.AddmisionDate;
+                                batchNumbers.Quantity = lotePed.Quantity;
+                                batchNumbers.ItemCode = lotePed.ItemCode;
+                                item.BatchNumbers.Add(batchNumbers);
+                            }
                         }
 
                         invoice.DocumentLines.Add(item);
@@ -319,7 +321,7 @@ namespace BOneSolucoes.Forms.Vendas
                     var result = SAPCommon.AddInvoice(invoice);
 
                     if (result != null)
-                    {                        
+                    {
                         oProgressBar.Value++;
                     }
                 }
@@ -344,7 +346,6 @@ namespace BOneSolucoes.Forms.Vendas
             }
 
         }
-
 
     }
 }

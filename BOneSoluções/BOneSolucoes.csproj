@@ -74,8 +74,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Comonn\SAPCommon.cs" />
+    <Compile Include="Core\CreateButton.cs" />
     <Compile Include="Entities\EventClass.cs" />
-    <Compile Include="Entities\Invoice.cs" />
     <Compile Include="Forms\AprovaçãoDocumento\formAprov.b1f.cs">
       <DependentUpon>formAprov.b1f</DependentUpon>
     </Compile>
@@ -124,9 +124,13 @@
     <EmbeddedResource Include="Resources\Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Icone\Icone.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Menu\menuAdd.xml" />
     <Content Include="Menu\menuRemove.xml" />
     <Content Include="Resources\SQL\BONE_ExecAprov.sql" />
@@ -140,9 +144,7 @@
     <Content Include="Resources\SQL\LoadPedFilter.sql" />
     <Content Include="Resources\SQL\PedidosFaturar.sql" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Imagens\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Forms\AprovaçãoDocumento\formAprov.b1f">
       <FormCategory>UserForm</FormCategory>

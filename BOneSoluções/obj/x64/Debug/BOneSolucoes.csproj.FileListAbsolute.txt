@@ -26,3 +26,4 @@ C:\Users\igor.oliveira\Desktop\_source\BOneSolucoes\BOneSoluções\bin\x64\Debug
 C:\Users\igor.oliveira\Desktop\_source\BOneSolucoes\BOneSoluções\bin\x64\Debug\RestSharp.dll
 C:\Users\igor.oliveira\Desktop\_source\BOneSolucoes\BOneSoluções\bin\x64\Debug\Newtonsoft.Json.xml
 C:\Users\igor.oliveira\Desktop\_source\BOneSolucoes\BOneSoluções\bin\x64\Debug\RestSharp.xml
+C:\Users\SAPB1DEV\Desktop\_source\BOneSolucoes\BOneSoluções\bin\x64\Debug\Icone\Icone.png

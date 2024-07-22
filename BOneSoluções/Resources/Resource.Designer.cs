@@ -88,6 +88,16 @@ namespace BOneSolucoes.Resources {
         }
         
         /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Icone {
+            get {
+                object obj = ResourceManager.GetObject("Icone", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT 
         ///		&apos;&apos; [Checked]
         ///	   ,CardCode [CardCode]
@@ -220,7 +230,7 @@ namespace BOneSolucoes.Resources {
         ///&lt;Application&gt;
         ///	&lt;Menus&gt;
         ///		&lt;action type=&quot;add&quot;&gt;
-        ///			&lt;Menu Checked=&quot;0&quot; Enabled=&quot;1&quot; FatherUID=&quot;43520&quot; Position=&quot;-1&quot; String=&quot;BOne Soluções&quot; Type=&quot;2&quot; UniqueID=&quot;mnu_mainmenu&quot; Image=&quot;%path%\Imagens\logo_menu.bmp&quot;&gt;
+        ///			&lt;Menu Checked=&quot;0&quot; Enabled=&quot;1&quot; FatherUID=&quot;43520&quot; Position=&quot;-1&quot; String=&quot;BOne Soluções&quot; Type=&quot;2&quot; UniqueID=&quot;mnu_mainmenu&quot; Image=&quot;%path%\Icone\Icone.png&quot;&gt;
         ///				&lt;Menus&gt;
         ///					&lt;action type=&quot;add&quot;&gt;
         ///						&lt;Menu Checked=&quot;0&quot; Enabled=&quot;1&quot; FatherUID=&quot;mnu_mainmenu&quot; Position=&quot;2&quot; String=&quot;Parametrização&quot; Type=&quot;1&quot; UniqueID=&quot;mnu_mnuParam&quot; /&gt;
@@ -229,7 +239,7 @@ namespace BOneSolucoes.Resources {
         ///			&lt;/Menu&gt;
         ///		&lt;/action&gt;
         ///		&lt;action type=&quot;add&quot;&gt;
-        ///			&lt;Menu Ch [o restante da cadeia de caracteres foi truncado]&quot;;.
+        ///			&lt;Menu Checked= [o restante da cadeia de caracteres foi truncado]&quot;;.
         /// </summary>
         internal static string menuAdd {
             get {
@@ -257,6 +267,8 @@ namespace BOneSolucoes.Resources {
         ///   Consulta uma cadeia de caracteres localizada semelhante a DECLARE @DocEntry AS NVARCHAR(50) = &apos;{0}&apos;
         ///
         ///SELECT 
+        ///	T0.&quot;ObjType&quot;,
+        ///	T0.&quot;DocEntry&quot;,
         ///	T0.&quot;CardCode&quot;, 
         ///	T0.&quot;CardName&quot;, 
         ///	T0.&quot;BPLId&quot;,
@@ -268,14 +280,11 @@ namespace BOneSolucoes.Resources {
         ///	T1.&quot;ItemCode&quot;, 
         ///	T1.&quot;Quantity&quot;,
         ///	T1.&quot;Price&quot;, 
-        ///	T1.&quot;Usage&quot;, 
-        ///	T1.&quot;BaseType&quot;, 
-        ///	T1.&quot;BaseEntry&quot;, 
-        ///	T1.&quot;BaseLine&quot;
+        ///	T1.&quot;Usage&quot;
         ///		
         ///FROM [ORDR] T0 
         ///JOIN [RDR1] T1 ON T1.DocEntry = T0.DocEntry
-        ///WHERE T0.&quot;DocEntry&quot; = @DocEntry.
+        ///WHERE T0.&quot;DocEntry&quot; = @DocEntry ORDER BY T1.&quot;LineNum&quot; ASC.
         /// </summary>
         internal static string PedidosFaturar {
             get {

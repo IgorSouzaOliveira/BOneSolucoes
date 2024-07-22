@@ -2,7 +2,7 @@
 <Application>
 	<Menus>
 		<action type="add">
-			<Menu Checked="0" Enabled="1" FatherUID="43520" Position="-1" String="BOne Soluções" Type="2" UniqueID="mnu_mainmenu" Image="%path%\Imagens\logo_menu.bmp">
+			<Menu Checked="0" Enabled="1" FatherUID="43520" Position="-1" String="BOne Soluções" Type="2" UniqueID="mnu_mainmenu" Image="%path%\Icone\Icone.png">
 				<Menus>
 					<action type="add">
 						<Menu Checked="0" Enabled="1" FatherUID="mnu_mainmenu" Position="2" String="Parametrização" Type="1" UniqueID="mnu_mnuParam" />
