@@ -26,7 +26,7 @@
           <Files />
         </Uninstallation>
       </x86>
-      <x64 AddonExe="C:\Users\SAPB1DEV\Desktop\_source\BOneSolucoes\BOneSoluções\bin\x64\Debug\BOneSolucoes.exe" AddonSig="">
+      <x64 AddonExe="C:\Users\SAPB1DEV\Desktop\_source\BOneSolucoes\BOneSoluções\bin\x64\Release\BOneSolucoes.exe" AddonSig="">
         <Installation>
           <Files>
             <File FileName="BOneSolucoes.b1s">
@@ -38,7 +38,22 @@
             <File FileName="BOneSolucoes.pdb">
               <Actions />
             </File>
+            <File FileName="Newtonsoft.Json.dll">
+              <Actions />
+            </File>
+            <File FileName="Newtonsoft.Json.xml">
+              <Actions />
+            </File>
+            <File FileName="RestSharp.dll">
+              <Actions />
+            </File>
+            <File FileName="RestSharp.xml">
+              <Actions />
+            </File>
             <File FileName="SAPBusinessOneSDK.dll">
+              <Actions />
+            </File>
+            <File FileName="Icone\Icone.png">
               <Actions />
             </File>
           </Files>
@@ -54,7 +69,22 @@
             <File FileName="BOneSolucoes.pdb">
               <Actions />
             </File>
+            <File FileName="Newtonsoft.Json.dll">
+              <Actions />
+            </File>
+            <File FileName="Newtonsoft.Json.xml">
+              <Actions />
+            </File>
+            <File FileName="RestSharp.dll">
+              <Actions />
+            </File>
+            <File FileName="RestSharp.xml">
+              <Actions />
+            </File>
             <File FileName="SAPBusinessOneSDK.dll">
+              <Actions />
+            </File>
+            <File FileName="Icone\Icone.png">
               <Actions />
             </File>
           </Files>

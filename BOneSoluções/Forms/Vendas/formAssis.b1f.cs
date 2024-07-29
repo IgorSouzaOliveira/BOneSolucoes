@@ -1,12 +1,8 @@
 ﻿using BOneSolucoes.Comonn;
-using BOneSolucoes.Entities;
 using BOneSolucoes.Models;
 using SAPbouiCOM.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BOneSolucoes.Forms.Vendas
 {
@@ -239,12 +235,11 @@ namespace BOneSolucoes.Forms.Vendas
         }
         private void Button2_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
-
-            if (Application.SBO_Application.MessageBox("Os pedidos selecionados serão faturados." + Environment.NewLine + "Deseja prosseguir ?", 1, "Sim", "Não") != 1)
-                return;
-
             SAPbouiCOM.DataTable oDT = this.UIAPIRawForm.DataSources.DataTables.Item("dtAssis");
             SAPbouiCOM.ProgressBar oProgressBar = null;
+
+            if (Application.SBO_Application.MessageBox("Os pedidos selecionados serão faturados." + Environment.NewLine + "Deseja prosseguir ?", 1, "Sim", "Não") != 1)
+                return;            
 
             try
             {
@@ -268,36 +263,34 @@ namespace BOneSolucoes.Forms.Vendas
                 oProgressBar.Text = "Gerando Nota Fiscal de Saida. Aguarde...";
                 foreach (var list in selectedPed)
                 {
-                    var dataOrder = SAPCommon.GetOrders(list);
+                    var oOrder = SAPCommon.GetOrders(list);
 
-                    if (dataOrder == null)
+                    if (oOrder == null)
                         return;
 
-                    InvoiceModel invoice = new InvoiceModel();
+                    InvoiceModel oInvoice = new InvoiceModel();
 
-                    invoice.CardCode = dataOrder.CardCode;
-                    invoice.CardName = dataOrder.CardName;
-                    invoice.BPL_IDAssignedToInvoice = dataOrder.BPL_IDAssignedToInvoice;
-                    invoice.Comments = dataOrder.Comments;
-                    invoice.PaymentGroupCode = dataOrder.PaymentGroupCode;
-                    invoice.PaymentMethod = dataOrder.PaymentMethod;
-                    invoice.SalesPersonCode = dataOrder.SalesPersonCode;
+                    oInvoice.CardCode = oOrder.CardCode;
+                    oInvoice.CardName = oOrder.CardName;
+                    oInvoice.BPL_IDAssignedToInvoice = oOrder.BPL_IDAssignedToInvoice;
+                    oInvoice.Comments = oOrder.Comments;
+                    oInvoice.PaymentGroupCode = oOrder.PaymentGroupCode;
+                    oInvoice.PaymentMethod = oOrder.PaymentMethod;
+                    oInvoice.SalesPersonCode = oOrder.SalesPersonCode;
 
-                    invoice.DocumentLines = new List<ItemModelInvoice>();
+                    oInvoice.DocumentLines = new List<ItemModelInvoice>();
 
-
-                    foreach (var docLine in dataOrder.DocumentLines)
+                    foreach (var docLine in oOrder.DocumentLines)
                     {
                         ItemModelInvoice item = new ItemModelInvoice();
                         item.BatchNumbers = new List<BatchNumbersInvoiceModel>();
-
 
                         item.ItemCode = docLine.ItemCode;
                         item.Quantity = docLine.Quantity;
                         item.Price = docLine.Price;
                         item.Usage = docLine.Usage;
                         item.BaseType = "17";
-                        item.BaseEntry = dataOrder.DocEntry;
+                        item.BaseEntry = oOrder.DocEntry;
                         item.BaseLine = docLine.LineNum;
 
                         if (docLine.BatchNumbers.Count > 0)
@@ -314,11 +307,11 @@ namespace BOneSolucoes.Forms.Vendas
                             }
                         }
 
-                        invoice.DocumentLines.Add(item);
+                        oInvoice.DocumentLines.Add(item);
 
                     }
 
-                    var result = SAPCommon.AddInvoice(invoice);
+                    var result = SAPCommon.AddInvoice(oInvoice);
 
                     if (result != null)
                     {

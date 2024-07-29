@@ -1,5 +1,4 @@
-﻿using BOneSolucoes.Core;
-using BOneSolucoes.Forms.Configuração;
+﻿using BOneSolucoes.Forms.Configuração;
 using SAPbouiCOM.Framework;
 using System;
 using System.Collections.Generic;
@@ -53,8 +52,6 @@ namespace BOneSolucoes.Forms
             this.EditText0 = ((SAPbouiCOM.EditText)(this.GetItem("edUsuario").Specific));
             this.EditText1 = ((SAPbouiCOM.EditText)(this.GetItem("edPass").Specific));
             this.StaticText2 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_9").Specific));
-            this.Button3 = ((SAPbouiCOM.Button)(this.GetItem("Item_7").Specific));
-            this.Button3.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.Button3_PressedAfter);
             this.OnCustomInitialize();
 
         }
@@ -178,14 +175,6 @@ namespace BOneSolucoes.Forms
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(oTable);
                 }
             }
-        }
-
-        private SAPbouiCOM.Button Button3;
-
-        private void Button3_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
-        {
-            //CreateButton.CreateBtn();
-
-        }
+        }      
     }
 }

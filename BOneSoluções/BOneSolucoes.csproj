@@ -73,9 +73,8 @@
     <Reference Include="SAPBusinessOneSDK" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Comonn\SAPCommon.cs" />
-    <Compile Include="Core\CreateButton.cs" />
-    <Compile Include="Entities\EventClass.cs" />
+    <Compile Include="Common\SAPCommon.cs" />
+    <Compile Include="Events\EventClass.cs" />
     <Compile Include="Forms\AprovaçãoDocumento\formAprov.b1f.cs">
       <DependentUpon>formAprov.b1f</DependentUpon>
     </Compile>

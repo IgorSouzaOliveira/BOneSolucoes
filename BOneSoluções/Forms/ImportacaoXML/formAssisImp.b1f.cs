@@ -7,7 +7,6 @@ using System.Xml.Serialization;
 using System.IO;
 using System.Xml;
 using BOneSolucoes.Forms.ImportacaoXML.Entities;
-using System.Collections.Generic;
 
 namespace BOneSolucoes.Forms.ImportacaoXML
 {
@@ -82,7 +81,7 @@ namespace BOneSolucoes.Forms.ImportacaoXML
             {
                 this.UIAPIRawForm.Freeze(true);
                 string chaveAcesso = null;
-                
+
                 foreach (var arq in arquivos)
                 {
                     string path = arq;
@@ -100,7 +99,7 @@ namespace BOneSolucoes.Forms.ImportacaoXML
                         NFeProc nfe = (NFeProc)ser.Deserialize(reader);
 
                         chaveAcesso = nfe.ProtNFe.InfoProtocolo.chNFe;
-                        
+
                         oRstCardCode.DoQuery($@"SELECT TOP 1 A.CardCode FROM CRD7 A WHERE A.""TaxId0"" = '{FormatarCnpj(nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.CNPJ)}' AND A.CardCode IN (SELECT B.CardCode FROM OSCN B )");
                         if (oRstCardCode.RecordCount == 0)
                             throw new Exception("Necessário vinculo na tela de Números de catálogo de parceiro de negócios.");
@@ -112,9 +111,6 @@ namespace BOneSolucoes.Forms.ImportacaoXML
                             LoadMatrix(chaveAcesso);
                             return;
                         }
-
-                        // throw new Exception($"XML: {chaveAcesso}, já foi importado!");
-
 
                         foreach (var produto in nfe.NotaFiscalEletronica.InformacoesNFe.Produtos)
                         {
@@ -188,7 +184,7 @@ namespace BOneSolucoes.Forms.ImportacaoXML
                     Application.SBO_Application.StatusBar.SetText("Processo finalizado com sucesso.", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
                 }
 
-                
+
             }
             catch (InvalidOperationException ex)
             {
@@ -224,7 +220,8 @@ namespace BOneSolucoes.Forms.ImportacaoXML
         {
             try
             {
-                this.UIAPIRawForm.Freeze(true);    
+
+                this.UIAPIRawForm.Freeze(true);
 
                 string sqlQuery = string.Format(Resources.Resource.CarregarXmlImp, chaveAcesso);
 
@@ -255,6 +252,7 @@ namespace BOneSolucoes.Forms.ImportacaoXML
         }
         private void Button4_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
+
             string[] arqSelected = this.UIAPIRawForm.DataSources.UserDataSources.Item("udArquivo").Value.Split(';');
 
             ReadXML(arqSelected);
@@ -283,8 +281,6 @@ namespace BOneSolucoes.Forms.ImportacaoXML
                     {
                         this.UIAPIRawForm.DataSources.UserDataSources.Item("udArquivo").Value = string.Empty;
                         this.UIAPIRawForm.DataSources.UserDataSources.Item("udArquivo").Value = string.Join(";", openFileDialog.FileNames);
-
-
                     }
                 });
                 t.IsBackground = true;
