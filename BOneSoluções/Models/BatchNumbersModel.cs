@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BOneSolucoes.Models
 {
-    class BatchNumbersInvoiceModel
+    class BatchNumbersModel
     {
         public String BatchNumber { get; set; }
         public DateTime AddmisionDate { get; set; }

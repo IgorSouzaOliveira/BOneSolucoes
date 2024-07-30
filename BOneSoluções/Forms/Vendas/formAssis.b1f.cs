@@ -3,6 +3,7 @@ using BOneSolucoes.Models;
 using SAPbouiCOM.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BOneSolucoes.Forms.Vendas
 {
@@ -30,6 +31,12 @@ namespace BOneSolucoes.Forms.Vendas
         private SAPbouiCOM.Button Button3;
         private SAPbouiCOM.StaticText StaticText7;
         private SAPbouiCOM.EditText edQuant;
+        private SAPbouiCOM.DataTable oDT { get; set; } = null;
+        private SAPbouiCOM.ProgressBar oProgressBar { get; set; } = null;
+
+
+
+
         public formAssis()
         {
         }
@@ -233,13 +240,13 @@ namespace BOneSolucoes.Forms.Vendas
 
 
         }
+
         private void Button2_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
-            SAPbouiCOM.DataTable oDT = this.UIAPIRawForm.DataSources.DataTables.Item("dtAssis");
-            SAPbouiCOM.ProgressBar oProgressBar = null;
+            oDT = this.UIAPIRawForm.DataSources.DataTables.Item("dtAssis");
 
             if (Application.SBO_Application.MessageBox("Os pedidos selecionados serão faturados." + Environment.NewLine + "Deseja prosseguir ?", 1, "Sim", "Não") != 1)
-                return;            
+                return;
 
             try
             {
@@ -250,13 +257,16 @@ namespace BOneSolucoes.Forms.Vendas
 
                 for (int i = 0; i < oDT.Rows.Count; i++)
                 {
-                    var selected = oDT.GetValue("Selecionar", i).ToString();
+                    var selected = oDT.GetValue("Selecionar", i).ToString().Where(x => x.ToString() != "N" || x.ToString() != "").ToList();
 
-                    if (selected == "N" || selected == "")
-                        continue;
-
-                    selectedPed.Add(oDT.GetValue("Nº Pedido", i).ToString());
-
+                    switch (selected.Count)
+                    {
+                        case 1:
+                            selectedPed.Add(oDT.GetValue("Nº Pedido", i).ToString());
+                            break;
+                        default:
+                            continue;
+                    }
                 }
 
                 oProgressBar = Application.SBO_Application.StatusBar.CreateProgressBar("", selectedPed.Count, false);
@@ -268,48 +278,36 @@ namespace BOneSolucoes.Forms.Vendas
                     if (oOrder == null)
                         return;
 
-                    InvoiceModel oInvoice = new InvoiceModel();
-
-                    oInvoice.CardCode = oOrder.CardCode;
-                    oInvoice.CardName = oOrder.CardName;
-                    oInvoice.BPL_IDAssignedToInvoice = oOrder.BPL_IDAssignedToInvoice;
-                    oInvoice.Comments = oOrder.Comments;
-                    oInvoice.PaymentGroupCode = oOrder.PaymentGroupCode;
-                    oInvoice.PaymentMethod = oOrder.PaymentMethod;
-                    oInvoice.SalesPersonCode = oOrder.SalesPersonCode;
-
-                    oInvoice.DocumentLines = new List<ItemModelInvoice>();
-
-                    foreach (var docLine in oOrder.DocumentLines)
+                    var oInvoice = new InvoiceModel
                     {
-                        ItemModelInvoice item = new ItemModelInvoice();
-                        item.BatchNumbers = new List<BatchNumbersInvoiceModel>();
 
-                        item.ItemCode = docLine.ItemCode;
-                        item.Quantity = docLine.Quantity;
-                        item.Price = docLine.Price;
-                        item.Usage = docLine.Usage;
-                        item.BaseType = "17";
-                        item.BaseEntry = oOrder.DocEntry;
-                        item.BaseLine = docLine.LineNum;
-
-                        if (docLine.BatchNumbers.Count > 0)
+                        CardCode = oOrder.CardCode,
+                        CardName = oOrder.CardName,
+                        BPL_IDAssignedToInvoice = oOrder.BPL_IDAssignedToInvoice,
+                        Comments = oOrder.Comments,
+                        PaymentGroupCode = oOrder.PaymentGroupCode,
+                        PaymentMethod = oOrder.PaymentMethod,
+                        SalesPersonCode = oOrder.SalesPersonCode,
+                        DocumentLines = oOrder.DocumentLines.Select(docLine => new ItemModel
                         {
-                            foreach (var lotePed in docLine.BatchNumbers)
+                            ItemCode = docLine.ItemCode,
+                            Quantity = docLine.Quantity,
+                            Price = docLine.Price,
+                            Usage = docLine.Usage,
+                            BaseType = "17",
+                            BaseEntry = oOrder.DocEntry,
+                            BaseLine = docLine.LineNum,
+                            BatchNumbers = docLine.BatchNumbers.Select(item => new BatchNumbersModel
                             {
-                                BatchNumbersInvoiceModel batchNumbers = new BatchNumbersInvoiceModel();
+                                BatchNumber = item.BatchNumber,
+                                ItemCode = item.ItemCode,
+                                Quantity = item.Quantity,
+                                BaseLineNumber = item.BaseLineNumber,
+                                AddmisionDate = item.AddmisionDate
 
-                                batchNumbers.BatchNumber = lotePed.BatchNumber;
-                                batchNumbers.AddmisionDate = lotePed.AddmisionDate;
-                                batchNumbers.Quantity = lotePed.Quantity;
-                                batchNumbers.ItemCode = lotePed.ItemCode;
-                                item.BatchNumbers.Add(batchNumbers);
-                            }
-                        }
-
-                        oInvoice.DocumentLines.Add(item);
-
-                    }
+                            }).Where(x => !string.IsNullOrEmpty(x.BatchNumber)).ToList()
+                        }).ToList()
+                    };
 
                     var result = SAPCommon.AddInvoice(oInvoice);
 

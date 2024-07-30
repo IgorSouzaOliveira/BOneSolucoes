@@ -18,7 +18,7 @@ namespace BOneSolucoes.Models
         public String PaymentMethod { get; set; }
         public String BPL_IDAssignedToInvoice { get; set; }
         public String SequenceSerial { get; set; }        
-        public List<ItemModelOrders> DocumentLines { get; set; }       
+        public List<ItemModel> DocumentLines { get; set; }       
 
     }
 }
