@@ -289,6 +289,8 @@ namespace BOneSolucoes.Forms.Compras
                 Dictionary<string, string> docsAprov = new Dictionary<string, string>();
                 Dictionary<string, string> docsReprov = new Dictionary<string, string>();
 
+
+
                 for (int i = 0; i < oDT.Rows.Count; i++)
                 {
                     var tipoDoc = oDT.GetValue("TipoDoc", i).ToString();

@@ -15,3 +15,4 @@
 FROM ORDR T0
 WHERE T0."DocStatus" = 'O'
 AND T0."Canceled" = 'N'
+AND T0."Confirmed" = 'Y'

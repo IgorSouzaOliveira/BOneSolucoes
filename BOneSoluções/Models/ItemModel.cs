@@ -19,7 +19,7 @@ namespace BOneSolucoes.Models
         public String BaseType { get; set; }
         public String BaseEntry { get; set; }
         public String BaseLine { get; set; }
-        public List<BatchNumbersModel> BatchNumbers { get; set; }
+        public List<BatchNumbersModel> BatchNumbers { get; set; } = new List<BatchNumbersModel>();
        
     }
 }

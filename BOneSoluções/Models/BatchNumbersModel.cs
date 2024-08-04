@@ -11,7 +11,7 @@ namespace BOneSolucoes.Models
         public String BatchNumber { get; set; }
         public DateTime AddmisionDate { get; set; }
         public double Quantity { get; set; }
-        public String BaseLineNumber { get; set; }
+        public int BaseLineNumber { get; set; }
         public String ItemCode { get; set; }
         public int SystemSerialNumber { get; set; }
     }

@@ -122,46 +122,46 @@ namespace BOneSolucoes.Comonn
         }
 
         /*Metodo para pegar informações do pedido*/
-        public static OrdersModel GetOrders(string pedido)
-        {
-            if (string.IsNullOrEmpty(B1Session))
-                SAPConnect();
+        //public static OrdersModel GetOrders(string pedido)
+        //{
+        //    if (string.IsNullOrEmpty(B1Session))
+        //        SAPConnect();
 
-            try
-            {
-                var client = new RestClient(_slAddress);
-                var request = new RestRequest($"/Orders({pedido})", Method.GET);
+        //    try
+        //    {
+        //        var client = new RestClient(_slAddress);
+        //        var request = new RestRequest($"/Orders({pedido})", Method.GET);
 
-                CookieContainer cookiecon = new CookieContainer();
-                cookiecon.Add(new Cookie("B1SESSION", B1Session, "/b1s/v1", _slServer));
-                client.CookieContainer = cookiecon;
+        //        CookieContainer cookiecon = new CookieContainer();
+        //        cookiecon.Add(new Cookie("B1SESSION", B1Session, "/b1s/v1", _slServer));
+        //        client.CookieContainer = cookiecon;
 
-                ServicePointManager.ServerCertificateValidationCallback += new System.Net.Security.RemoteCertificateValidationCallback(ValidateServerCertificate);
+        //        ServicePointManager.ServerCertificateValidationCallback += new System.Net.Security.RemoteCertificateValidationCallback(ValidateServerCertificate);
 
-                IRestResponse response = client.Execute(request);
+        //        IRestResponse response = client.Execute(request);
 
-                OrdersModel orderRetorno = new OrdersModel();
+        //        OrdersModel orderRetorno = new OrdersModel();
 
-                if (response.StatusCode != HttpStatusCode.OK)
-                {
-                    dynamic ret = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(response.Content);
-                    throw new Exception(ret.error.message.value.ToString());
-                }
+        //        if (response.StatusCode != HttpStatusCode.OK)
+        //        {
+        //            dynamic ret = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(response.Content);
+        //            throw new Exception(ret.error.message.value.ToString());
+        //        }
 
-                orderRetorno = Newtonsoft.Json.JsonConvert.DeserializeObject<OrdersModel>(response.Content);
+        //        orderRetorno = Newtonsoft.Json.JsonConvert.DeserializeObject<OrdersModel>(response.Content);
 
-                return orderRetorno;
+        //        return orderRetorno;
 
-            }
-            catch (Exception ex)
-            {
-                Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
-                return null;
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+        //        return null;
+        //    }
+        //}
 
         /*Metodo para faturar pedidos*/
-        public static InvoiceModel AddInvoice(InvoiceModel oInvoice)
+        public static InvoiceModel AddInvoice(InvoiceModel oInvoice, int docEntry)
         {
             if (string.IsNullOrEmpty(B1Session))
                 SAPConnect();
@@ -188,7 +188,7 @@ namespace BOneSolucoes.Comonn
                 if (response.StatusCode != HttpStatusCode.Created)
                 {
                     dynamic ret = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(response.Content);
-                    throw new Exception($"Erro ao Gerar Nota Fiscal de Saida. {Environment.NewLine} Detalhes: {ret.error.message.value.ToString()}");
+                    throw new Exception($"Erro ao Gerar Nota Fiscal de Saida. {Environment.NewLine} Pedido Nº {docEntry} {Environment.NewLine} Detalhe: {ret.error.message.value.ToString()}.");
                 }
 
                 notaRetorno = Newtonsoft.Json.JsonConvert.DeserializeObject<InvoiceModel>(response.Content);

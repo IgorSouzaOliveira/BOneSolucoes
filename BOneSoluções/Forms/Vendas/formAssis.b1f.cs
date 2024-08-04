@@ -4,6 +4,7 @@ using SAPbouiCOM.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BOneSolucoes.Forms.Vendas
 {
@@ -240,102 +241,118 @@ namespace BOneSolucoes.Forms.Vendas
 
 
         }
-
-        private void Button2_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        private async void Button2_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
-            oDT = this.UIAPIRawForm.DataSources.DataTables.Item("dtAssis");
-
-            if (Application.SBO_Application.MessageBox("Os pedidos selecionados serão faturados." + Environment.NewLine + "Deseja prosseguir ?", 1, "Sim", "Não") != 1)
-                return;
-
-            try
+            // O tratamento assíncrono é feito dentro do contexto do método original
+            await Task.Run(() =>
             {
+                SAPbouiCOM.DataTable oDT = null;
+                SAPbouiCOM.ProgressBar oProgressBar = null;
 
-                Matrix0.FlushToDataSource();
-
-                List<String> selectedPed = new List<string>();
-
-                for (int i = 0; i < oDT.Rows.Count; i++)
+                try
                 {
-                    var selected = oDT.GetValue("Selecionar", i).ToString().Where(x => x.ToString() != "N" || x.ToString() != "").ToList();
+                    // Manipule o DataTable e o ProgressBar no thread principal
+                    oDT = this.UIAPIRawForm.DataSources.DataTables.Item("dtAssis");
 
-                    switch (selected.Count)
-                    {
-                        case 1:
-                            selectedPed.Add(oDT.GetValue("Nº Pedido", i).ToString());
-                            break;
-                        default:
-                            continue;
-                    }
-                }
-
-                oProgressBar = Application.SBO_Application.StatusBar.CreateProgressBar("", selectedPed.Count, false);
-                oProgressBar.Text = "Gerando Nota Fiscal de Saida. Aguarde...";
-                foreach (var list in selectedPed)
-                {
-                    var oOrder = SAPCommon.GetOrders(list);
-
-                    if (oOrder == null)
+                    if (Application.SBO_Application.MessageBox("Os pedidos selecionados serão faturados." + Environment.NewLine + "Deseja prosseguir ?", 1, "Sim", "Não") != 1)
                         return;
 
-                    var oInvoice = new InvoiceModel
-                    {
+                    Matrix0.FlushToDataSource();
+                    List<String> selectedPed = new List<string>();
 
-                        CardCode = oOrder.CardCode,
-                        CardName = oOrder.CardName,
-                        BPL_IDAssignedToInvoice = oOrder.BPL_IDAssignedToInvoice,
-                        Comments = oOrder.Comments,
-                        PaymentGroupCode = oOrder.PaymentGroupCode,
-                        PaymentMethod = oOrder.PaymentMethod,
-                        SalesPersonCode = oOrder.SalesPersonCode,
-                        DocumentLines = oOrder.DocumentLines.Select(docLine => new ItemModel
+                    for (int i = 0; i < oDT.Rows.Count; i++)
+                    {
+                        var selected = oDT.GetValue("Selecionar", i).ToString().Where(x => x.ToString() != "N" && x.ToString() != "").ToList();
+
+                        if (selected.Count == 1)
                         {
-                            ItemCode = docLine.ItemCode,
-                            Quantity = docLine.Quantity,
-                            Price = docLine.Price,
-                            Usage = docLine.Usage,
-                            BaseType = "17",
-                            BaseEntry = oOrder.DocEntry,
-                            BaseLine = docLine.LineNum,
-                            BatchNumbers = docLine.BatchNumbers.Select(item => new BatchNumbersModel
-                            {
-                                BatchNumber = item.BatchNumber,
-                                ItemCode = item.ItemCode,
-                                Quantity = item.Quantity,
-                                BaseLineNumber = item.BaseLineNumber,
-                                AddmisionDate = item.AddmisionDate
+                            selectedPed.Add(oDT.GetValue("Nº Pedido", i).ToString());
+                        }
+                    }
 
-                            }).Where(x => !string.IsNullOrEmpty(x.BatchNumber)).ToList()
-                        }).ToList()
-                    };
+                    oProgressBar = Application.SBO_Application.StatusBar.CreateProgressBar("", selectedPed.Count, false);
+                    oProgressBar.Text = "Gerando Nota Fiscal de Saida. Aguarde...";
 
-                    var result = SAPCommon.AddInvoice(oInvoice);
-
-                    if (result != null)
+                    // Processo assíncrono para gerar as faturas
+                    foreach (var list in selectedPed)
                     {
+                        // Carregar e preparar o pedido
+                        SAPbobsCOM.Documents oOrder = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oOrders);
+                        oOrder.GetByKey(Convert.ToInt32(list));
+
+                        if (oOrder == null)
+                            throw new Exception("Pedido de venda não encontrado.");
+
+                        var oInvoice = new InvoiceModel
+                        {
+                            CardCode = oOrder.CardCode,
+                            CardName = oOrder.CardName,
+                            BPL_IDAssignedToInvoice = oOrder.BPL_IDAssignedToInvoice.ToString(),
+                            Comments = oOrder.Comments,
+                            PaymentGroupCode = oOrder.PaymentGroupCode,
+                            PaymentMethod = oOrder.PaymentMethod,
+                            SalesPersonCode = oOrder.SalesPersonCode,
+                            DocumentLines = new List<ItemModel>()
+                        };
+
+                        for (int i = 0; i < oOrder.Lines.Count; i++)
+                        {
+                            var oItem = new ItemModel
+                            {
+                                ItemCode = oOrder.Lines.ItemCode,
+                                Quantity = oOrder.Lines.Quantity,
+                                Price = oOrder.Lines.Price,
+                                Usage = Convert.ToInt32(oOrder.Lines.Usage),
+                                BaseType = "17",
+                                BaseEntry = oOrder.DocEntry.ToString(),
+                                BaseLine = oOrder.Lines.LineNum.ToString(),
+                                BatchNumbers = new List<BatchNumbersModel>()
+                            };
+
+                            if (oOrder.Lines.BatchNumbers.Count > 0)
+                            {
+                                for (int j = 0; j < oOrder.Lines.BatchNumbers.Count; j++)
+                                {
+                                    oOrder.Lines.BatchNumbers.SetCurrentLine(j);
+
+                                    var oBatchNumber = new BatchNumbersModel
+                                    {
+                                        BatchNumber = oOrder.Lines.BatchNumbers.BatchNumber,
+                                        ItemCode = oOrder.Lines.BatchNumbers.ItemCode,
+                                        Quantity = oOrder.Lines.BatchNumbers.Quantity,
+                                        BaseLineNumber = oOrder.Lines.BatchNumbers.BaseLineNumber,
+                                        AddmisionDate = oOrder.Lines.BatchNumbers.AddmisionDate,
+                                        SystemSerialNumber = oOrder.Lines.BatchNumbers.SystemSerialNumber
+                                    };
+                                    oItem.BatchNumbers.Add(oBatchNumber);
+                                }
+                            }
+
+                            oInvoice.DocumentLines.Add(oItem);
+                        }
+
+                        // Chame o método assíncrono para adicionar a Invoice
+                        ExecuteAsyncTask(oInvoice, oOrder.DocEntry).GetAwaiter().GetResult();
                         oProgressBar.Value++;
                     }
                 }
-
-            }
-            catch (Exception ex)
-            {
-                Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
-            }
-            finally
-            {
-                if (oDT != null)
+                catch (Exception ex)
                 {
-                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oDT);
+                    Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
                 }
-                if (oProgressBar != null)
+                finally
                 {
-                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oProgressBar);
+                    if (oDT != null) System.Runtime.InteropServices.Marshal.ReleaseComObject(oDT);
+                    if (oProgressBar != null) System.Runtime.InteropServices.Marshal.ReleaseComObject(oProgressBar);
+
+                    LoadMatrix();
                 }
+            });
+        }
 
-                LoadMatrix();
-            }
-
+        private async Task ExecuteAsyncTask(InvoiceModel oInvoice, int docEntry)
+        {                        
+            await Task.Run(() => SAPCommon.AddInvoice(oInvoice, docEntry));
         }
 
     }
