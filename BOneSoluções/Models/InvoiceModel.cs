@@ -29,6 +29,6 @@ namespace BOneSolucoes.Models
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public String PaymentMethod { get; set; }
         public int SalesPersonCode { get; set; }
-        public List<ItemModel> DocumentLines { get; set; }
+        public List<ItemModel> DocumentLines { get; set; } = new List<ItemModel>();
     }
 }

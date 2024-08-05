@@ -292,11 +292,13 @@ namespace BOneSolucoes.Forms.Vendas
                             PaymentGroupCode = oOrder.PaymentGroupCode,
                             PaymentMethod = oOrder.PaymentMethod,
                             SalesPersonCode = oOrder.SalesPersonCode,
-                            DocumentLines = new List<ItemModel>()
+                          
                         };
 
                         for (int i = 0; i < oOrder.Lines.Count; i++)
                         {
+                            oOrder.Lines.SetCurrentLine(i);
+
                             var oItem = new ItemModel
                             {
                                 ItemCode = oOrder.Lines.ItemCode,
@@ -305,11 +307,10 @@ namespace BOneSolucoes.Forms.Vendas
                                 Usage = Convert.ToInt32(oOrder.Lines.Usage),
                                 BaseType = "17",
                                 BaseEntry = oOrder.DocEntry.ToString(),
-                                BaseLine = oOrder.Lines.LineNum.ToString(),
-                                BatchNumbers = new List<BatchNumbersModel>()
+                                BaseLine = oOrder.Lines.LineNum.ToString(),                               
                             };
 
-                            if (oOrder.Lines.BatchNumbers.Count > 0)
+                            if (oOrder.Lines.BatchNumbers.Count > 0 && !string.IsNullOrEmpty(oOrder.Lines.BatchNumbers.ItemCode))
                             {
                                 for (int j = 0; j < oOrder.Lines.BatchNumbers.Count; j++)
                                 {
