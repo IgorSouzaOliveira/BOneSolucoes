@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 using System.IO;
 using System.Xml;
 using BOneSolucoes.Forms.ImportacaoXML.Entities;
+using System.Diagnostics;
 
 namespace BOneSolucoes.Forms.ImportacaoXML
 {
@@ -25,7 +26,7 @@ namespace BOneSolucoes.Forms.ImportacaoXML
         private SAPbouiCOM.Button Button0;
         private SAPbouiCOM.StaticText StaticText1;
         private SAPbouiCOM.ComboBox cbxFilial;
-
+      
         public formAssisImp()
         {
         }
@@ -267,25 +268,74 @@ namespace BOneSolucoes.Forms.ImportacaoXML
                 this.UIAPIRawForm.Freeze(true);
 
 
-                Thread t = new Thread(() =>
+                try
                 {
-
-                    OpenFileDialog openFileDialog = new OpenFileDialog();
-                    openFileDialog.Multiselect = true;
-                    openFileDialog.Filter = "Arquivos xml|*.xml";
-                    openFileDialog.Title = "Selecione os Arquivos";
-
-                    //DialogResult dr = openFileDialog.ShowDialog(new Form());
-
-                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    Thread t = new Thread(() =>
                     {
-                        this.UIAPIRawForm.DataSources.UserDataSources.Item("udArquivo").Value = string.Empty;
-                        this.UIAPIRawForm.DataSources.UserDataSources.Item("udArquivo").Value = string.Join(";", openFileDialog.FileNames);
-                    }
-                });
-                t.IsBackground = true;
-                t.SetApartmentState(ApartmentState.STA);
-                t.Start();
+                        using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                        {
+                            openFileDialog.Multiselect = false;
+                            openFileDialog.Filter = "XML Files (*.XML)|*.XML";
+                            openFileDialog.RestoreDirectory = true;
+
+                            var processes = Process.GetProcessesByName("SAP Business One");
+                            if (processes.Length == 1)
+                            {
+                                var windowHandle = processes[0].MainWindowHandle;
+                                var windowWrapper = new WindowWrapper(windowHandle);
+                                var result = openFileDialog.ShowDialog(windowWrapper);
+
+                                if (result == DialogResult.OK)
+                                {
+                                    this.UIAPIRawForm.DataSources.UserDataSources.Item("udArquivo").Value = string.Empty;
+                                    this.UIAPIRawForm.DataSources.UserDataSources.Item("udArquivo").Value = string.Join(";", openFileDialog.FileNames);
+                                }
+                            }
+                        }
+                    });          
+                    t.IsBackground = true;
+                    t.SetApartmentState(ApartmentState.STA);
+                    t.Start();
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+
+
+
+
+                //Thread t = new Thread(() =>
+                //{
+
+                //    OpenFileDialog openFileDialog = new OpenFileDialog();
+                //    openFileDialog.Multiselect = true;
+                //    openFileDialog.Filter = "Arquivos xml|*.xml";
+                //    openFileDialog.Title = "Selecione os Arquivos";
+
+
+
+                //    DialogResult dr = openFileDialog.ShowDialog(mainForm);
+
+
+                //    mainForm.TopMost = true;
+                //    mainForm.StartPosition = FormStartPosition.CenterScreen;
+                //    mainForm.ShowInTaskbar = true;
+
+
+                //    if (dr == DialogResult.OK)
+                //    {
+
+                //        this.UIAPIRawForm.DataSources.UserDataSources.Item("udArquivo").Value = string.Empty;
+                //        this.UIAPIRawForm.DataSources.UserDataSources.Item("udArquivo").Value = string.Join(";", openFileDialog.FileNames);
+                //    }
+                //});
+
+                //t.IsBackground = false;
+                //t.SetApartmentState(ApartmentState.STA);
+                //t.Start();
+
             }
             catch (Exception ex)
             {
@@ -296,6 +346,18 @@ namespace BOneSolucoes.Forms.ImportacaoXML
                 this.UIAPIRawForm.Freeze(false);
             }
 
+        }
+
+        private class WindowWrapper : IWin32Window
+        {
+            private IntPtr _handle;
+
+            public WindowWrapper(IntPtr handle)
+            {
+                _handle = handle;
+            }
+
+            public IntPtr Handle => _handle;
         }
         private void Button0_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
