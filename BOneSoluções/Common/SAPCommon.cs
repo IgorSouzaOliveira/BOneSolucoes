@@ -17,7 +17,22 @@ namespace BOneSolucoes.Comonn
         private static String _slAddress;
         private static String _slServer;
         private static String B1Session;
+        public static int SessionTimeout { get; set; }
+        public static DateTime ConnectionTime { get; set; }
+        private static bool ValidaToken()
+        {
+            DateTime timeNow = DateTime.Now;
 
+            if (SessionTimeout == 0) { SAPConnect(); return true; };
+
+            if (ConnectionTime.Subtract(timeNow).Minutes >= SessionTimeout)
+            {
+                return false;
+            }
+
+            return true;
+
+        }
         private static void ReadDataConnection()
         {
             SAPbobsCOM.Recordset oRst = (SAPbobsCOM.Recordset)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
@@ -61,10 +76,14 @@ namespace BOneSolucoes.Comonn
 
                 IRestResponse rest = client.Execute(request);
 
-                B1Session = rest.Cookies.FirstOrDefault()?.Value;                
-
+                B1Session = rest.Cookies.FirstOrDefault()?.Value;
+                
                 if (rest.StatusCode == HttpStatusCode.OK)
-                {                    
+                {
+                    dynamic ret = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(rest.Content);
+                    SessionTimeout = ret.SessionTimeout;
+                    ConnectionTime = DateTime.Now;
+
                     return B1Session;
                 }
                 else
@@ -83,8 +102,8 @@ namespace BOneSolucoes.Comonn
         /*Metodo para atualizar cadastro de PN*/
         public static String UpdateBP(BusinessPartnerModel oBP)
         {
-            if (string.IsNullOrEmpty(B1Session))           
-                SAPConnect();            
+            if (ValidaToken().Equals(false))
+                SAPConnect();
 
             try
             {
@@ -119,51 +138,12 @@ namespace BOneSolucoes.Comonn
                 return null;
             }
 
-        }
-
-        /*Metodo para pegar informações do pedido*/
-        //public static OrdersModel GetOrders(string pedido)
-        //{
-        //    if (string.IsNullOrEmpty(B1Session))
-        //        SAPConnect();
-
-        //    try
-        //    {
-        //        var client = new RestClient(_slAddress);
-        //        var request = new RestRequest($"/Orders({pedido})", Method.GET);
-
-        //        CookieContainer cookiecon = new CookieContainer();
-        //        cookiecon.Add(new Cookie("B1SESSION", B1Session, "/b1s/v1", _slServer));
-        //        client.CookieContainer = cookiecon;
-
-        //        ServicePointManager.ServerCertificateValidationCallback += new System.Net.Security.RemoteCertificateValidationCallback(ValidateServerCertificate);
-
-        //        IRestResponse response = client.Execute(request);
-
-        //        OrdersModel orderRetorno = new OrdersModel();
-
-        //        if (response.StatusCode != HttpStatusCode.OK)
-        //        {
-        //            dynamic ret = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(response.Content);
-        //            throw new Exception(ret.error.message.value.ToString());
-        //        }
-
-        //        orderRetorno = Newtonsoft.Json.JsonConvert.DeserializeObject<OrdersModel>(response.Content);
-
-        //        return orderRetorno;
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
-        //        return null;
-        //    }
-        //}
+        }        
 
         /*Metodo para faturar pedidos*/
         public static InvoiceModel AddInvoice(InvoiceModel oInvoice, int docEntry)
         {
-            if (string.IsNullOrEmpty(B1Session))
+            if (ValidaToken().Equals(false))
                 SAPConnect();
 
             try
