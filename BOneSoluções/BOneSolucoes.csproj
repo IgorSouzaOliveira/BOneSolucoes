@@ -102,6 +102,7 @@
     <Compile Include="Forms\Vendas\formAssis.b1f.cs">
       <DependentUpon>formAssis.b1f</DependentUpon>
     </Compile>
+    <Compile Include="Models\AprovacaoModel.cs" />
     <Compile Include="Models\BatchNumbersModel.cs" />
     <Compile Include="Models\BusinessPartnerModel.cs" />
     <Compile Include="Models\InvoiceModel.cs" />

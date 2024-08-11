@@ -24,7 +24,8 @@ SELECT
   T0.U_BOneModeloAut [ModeloAut],   
   (SELECT b.PymntGroup FROM OCTG B WHERE B.GroupNum = T0.U_BOnePaymentCode) [PaymentName],  
   T0.U_BOnePaymentMethod [PaymentMethod],   
-  T0.U_BOneDocTotal [DocTotal]  
+  T0.U_BOneDocTotal [DocTotal],
+  '' AS [Status]
   
 FROM [@BONEAPROV] T0 WITH(NOLOCK)  
 JOIN OWST T1 WITH(NOLOCK) ON T1.WstCode = T0.U_BOneCodEtapa  

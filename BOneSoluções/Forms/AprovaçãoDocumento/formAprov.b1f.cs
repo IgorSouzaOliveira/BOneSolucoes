@@ -1,4 +1,5 @@
-﻿using SAPbouiCOM.Framework;
+﻿using BOneSolucoes.Models;
+using SAPbouiCOM.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,7 +73,6 @@ namespace BOneSolucoes.Forms.Compras
             LoadVendComp();
             LoadFilial();
             LoadMatrix();
-
         }
 
         /*Metodo para carregar os Compradores e Vendedores*/
@@ -281,48 +281,37 @@ namespace BOneSolucoes.Forms.Compras
 
         private void Button0_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
+            if (Application.SBO_Application.MessageBox($"Os documentos selecionados serão processados. {Environment.NewLine} Deseja continuar ?", 1, "Sim", "Não") != 1)
+                return;
+
             SAPbouiCOM.DataTable oDT = this.UIAPIRawForm.DataSources.DataTables.Item("mtxAprov");
-            mtxAprov.FlushToDataSource();
 
             try
             {
-                Dictionary<string, string> docsAprov = new Dictionary<string, string>();
-                Dictionary<string, string> docsReprov = new Dictionary<string, string>();
+                List<AprovacaoModel> aprovacaos = new List<AprovacaoModel>();
 
-
+                mtxAprov.FlushToDataSource();
 
                 for (int i = 0; i < oDT.Rows.Count; i++)
                 {
-                    var tipoDoc = oDT.GetValue("TipoDoc", i).ToString();
-                    var selected = oDT.GetValue("Sel", i).ToString();
-                    var docEntry = oDT.GetValue("DocEntry", i).ToString();
-                    var status = oDT.GetValue("Status", i).ToString();
 
-                    if (selected == "N" || selected == "")
-                        continue;
-
-                    switch (status)
+                    var itemsSelected = new AprovacaoModel
                     {
-                        case "Y":
-                            docsAprov.Add(docEntry, tipoDoc);
-                            break;
 
-                        case "N":
-                            docsReprov.Add(docEntry, tipoDoc);
-                            break;
-                    }
+                        TipoDoc = oDT.GetValue("TipoDoc", i).ToString(),
+                        Selected = oDT.GetValue("Sel", i).ToString(),
+                        DocEntry = oDT.GetValue("DocEntry", i).ToString(),
+                        Status = oDT.GetValue("Status", i).ToString()
+
+                    };
+
+                    aprovacaos.Add(itemsSelected);
                 }
 
-                foreach (var dAprov in docsAprov)
+                foreach (var item in aprovacaos.Where(x => x.Selected == "Y"))
                 {
-                    ProcessDocAprov(Convert.ToInt32(dAprov.Key), dAprov.Value, "Y");
-                }
-
-                foreach (var dReprov in docsReprov)
-                {
-                    ProcessTableAprov(Convert.ToInt32(dReprov.Key), dReprov.Value, "N");
-                }
-
+                    ProcessarDoc(Convert.ToInt32(item.DocEntry), item.TipoDoc, item.Status);
+                };
             }
             catch (Exception ex)
             {
@@ -337,66 +326,42 @@ namespace BOneSolucoes.Forms.Compras
             }
         }
 
-        /* Metodo para processar documentos selecionados - Aprovado */
-        private void ProcessDocAprov(int docentry, string tipoDoc, string status)
+        /* Metodo para processar documentos selecionados*/
+        private void ProcessarDoc(int docentry, string tipoDoc, string status)
         {
-            SAPbobsCOM.Documents oOrder = null;
-            SAPbobsCOM.Documents oPurchaseQuotations = null;
-            SAPbobsCOM.Documents oPurchaseOrders = null;
+            SAPbobsCOM.Documents oDocuments = null;
+
             try
             {
                 switch (tipoDoc)
                 {
                     case "Pedido de venda":
-                        oOrder = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oOrders);
-                        if (oOrder.GetByKey(docentry))
-                        {
-                            oOrder.Confirmed = SAPbobsCOM.BoYesNoEnum.tYES;
-
-                            Int32 lRet = oOrder.Update();
-
-                            if (lRet != 0)
-                            {
-                                throw new Exception(Program.oCompany.GetLastErrorDescription());
-                            }
-
-                            ProcessTableAprov(docentry, oOrder.DocObjectCodeEx, status);
-
-                        }
+                        oDocuments = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oOrders);
                         break;
-
                     case "Oferta de compra":
-                        oPurchaseQuotations = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseQuotations);
-                        if (oPurchaseQuotations.GetByKey(docentry))
-                        {
-                            oPurchaseQuotations.Confirmed = SAPbobsCOM.BoYesNoEnum.tYES;
+                        oDocuments = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseQuotations);
+                        break;
+                    case "Pedido de compra":
+                        oDocuments = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseOrders);
+                        break;
+                }
 
-                            Int32 lRet = oPurchaseQuotations.Update();
+                switch (status)
+                {
+                    case "Y":
+                        oDocuments.GetByKey(docentry);
+                        oDocuments.Confirmed = SAPbobsCOM.BoYesNoEnum.tYES;
+                        int lRet = oDocuments.Update();
 
-                            if (lRet != 0)
-                            {
-                                throw new Exception(Program.oCompany.GetLastErrorDescription());
-                            }
+                        if (lRet != 0)
+                            throw new Exception(Program.oCompany.GetLastErrorDescription());
 
-                            ProcessTableAprov(docentry, oPurchaseQuotations.DocObjectCodeEx, status);
-                        }
+                        Application.SBO_Application.StatusBar.SetText("Documento atualizado com sucesso.",SAPbouiCOM.BoMessageTime.bmt_Short,SAPbouiCOM.BoStatusBarMessageType.smt_Success);
+                        ProcessTableAprov(docentry,tipoDoc,status);
                         break;
 
-                    case "Pedido de compra":
-                        oPurchaseOrders = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseOrders);
-                        if (oPurchaseOrders.GetByKey(docentry))
-                        {
-                            oPurchaseOrders.Confirmed = SAPbobsCOM.BoYesNoEnum.tYES;
-
-                            Int32 lRet = oPurchaseOrders.Update();
-
-                            if (lRet != 0)
-                            {
-                                throw new Exception(Program.oCompany.GetLastErrorDescription());
-                            }
-
-                            ProcessTableAprov(docentry, oPurchaseOrders.DocObjectCodeEx, status);
-                        }
+                    case "N":
+                        ProcessTableAprov(docentry, tipoDoc, status);
                         break;
                 }
             }
@@ -406,17 +371,9 @@ namespace BOneSolucoes.Forms.Compras
             }
             finally
             {
-                if (oOrder != null)
+                if (oDocuments != null)
                 {
-                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oOrder);
-                }
-                if (oPurchaseQuotations != null)
-                {
-                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oPurchaseQuotations);
-                }
-                if (oPurchaseOrders != null)
-                {
-                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oPurchaseOrders);
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oDocuments);
                 }
             }
         }
