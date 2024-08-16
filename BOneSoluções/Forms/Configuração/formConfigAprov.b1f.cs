@@ -84,27 +84,21 @@ namespace BOneSolucoes.Forms.Configuração
         {
             try
             {
-                int row = mtxConf.RowCount;
+                this.UIAPIRawForm.Freeze(true);
+                 
                 mtxConf.AddRow();
-
-                if (row == 0)
-                {
-
-                    ((SAPbouiCOM.EditText)mtxConf.Columns.Item("#").Cells.Item(1).Specific).String = "001";
-                }
-                else
-                {
-                    int newRow = row + 1;
-                    ((SAPbouiCOM.EditText)mtxConf.Columns.Item("#").Cells.Item(newRow).Specific).String = $"00{newRow.ToString()}";
-                    mtxConf.ClearRowData(newRow);
-                }
-
+                ((SAPbouiCOM.EditText)mtxConf.Columns.Item("#").Cells.Item(mtxConf.RowCount).Specific).String = (mtxConf.RowCount).ToString();
+                mtxConf.ClearRowData(mtxConf.RowCount);
 
             }
             catch (Exception ex)
             {
                 Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
             }
+            finally
+            {
+               this.UIAPIRawForm.Freeze(false);
+            }        
         }
         private void mtxConf_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
@@ -165,7 +159,7 @@ namespace BOneSolucoes.Forms.Configuração
                         }
                     }
                     else
-                    {       
+                    {
                         oTable.Code = oDT.GetValue("Code", i).ToString();
                         oTable.Name = oDT.GetValue("Code", i).ToString();
                         oTable.UserFields.Fields.Item("U_BONE_ObjectType").Value = oDT.GetValue(2, i).ToString();
@@ -212,7 +206,7 @@ namespace BOneSolucoes.Forms.Configuração
             {
                 var objType = this.UIAPIRawForm.DataSources.UserDataSources.Item("udTela").ValueEx;
 
-                string query = $@"{Resources.Resource.LoadConfAprov} WHERE T0.""U_BONE_ObjectType"" = {objType}";
+                string query = $@"SELECT '' as 'Sel',T0.""Code"",T0.""U_BONE_ObjectType"", T0.""U_BONE_NomeConsulta"", T0.""U_BONE_Query"",T0.""U_BONE_CodeEtapa"", T0.""U_BOne_EtapaAut"", T0.""U_BOne_Ativo"" FROM[@BONMODAPROV] T0 WHERE T0.""U_BONE_ObjectType"" = {objType} ORDER BY CAST(T0.""Code"" AS INT) ASC ";
 
                 this.UIAPIRawForm.DataSources.DataTables.Item("mtxConf").ExecuteQuery(query);
 
@@ -245,7 +239,7 @@ namespace BOneSolucoes.Forms.Configuração
                     var selected = ((SAPbouiCOM.CheckBox)mtxConf.Columns.Item("colSel").Cells.Item(i).Specific).Checked;
 
                     if (selected == false)
-                        continue;                    
+                        continue;
 
                     var getKey = ((SAPbouiCOM.EditText)mtxConf.Columns.Item("#").Cells.Item(i).Specific).Value;
                     if (oTable.GetByKey(getKey))
