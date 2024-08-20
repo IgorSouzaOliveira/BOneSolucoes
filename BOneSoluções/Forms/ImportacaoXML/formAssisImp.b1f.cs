@@ -101,7 +101,7 @@ namespace BOneSolucoes.Forms.ImportacaoXML
 
                         chaveAcesso = nfe.ProtNFe.InfoProtocolo.chNFe;
 
-                        oRstCardCode.DoQuery($@"SELECT TOP 1 A.CardCode FROM CRD7 A WHERE A.""TaxId0"" = '{FormatarCnpj(nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.CNPJ)}' AND A.CardCode IN (SELECT B.CardCode FROM OSCN B )");
+                        oRstCardCode.DoQuery($@"SELECT TOP 1 A.CardCode FROM CRD7 A WHERE ISNULL(A.""TaxId0"",'') <> ''  AND A.""TaxId0"" = '{FormatarCnpj(nfe.NotaFiscalEletronica.InformacoesNFe.Emitente.CNPJ)}' AND A.CardCode IN (SELECT B.CardCode FROM OSCN B )");
                         if (oRstCardCode.RecordCount == 0)
                             throw new Exception("Necessário vinculo na tela de Números de catálogo de parceiro de negócios.");
 
@@ -303,39 +303,6 @@ namespace BOneSolucoes.Forms.ImportacaoXML
                     MessageBox.Show(ex.ToString());
                 }
 
-
-
-
-                //Thread t = new Thread(() =>
-                //{
-
-                //    OpenFileDialog openFileDialog = new OpenFileDialog();
-                //    openFileDialog.Multiselect = true;
-                //    openFileDialog.Filter = "Arquivos xml|*.xml";
-                //    openFileDialog.Title = "Selecione os Arquivos";
-
-
-
-                //    DialogResult dr = openFileDialog.ShowDialog(mainForm);
-
-
-                //    mainForm.TopMost = true;
-                //    mainForm.StartPosition = FormStartPosition.CenterScreen;
-                //    mainForm.ShowInTaskbar = true;
-
-
-                //    if (dr == DialogResult.OK)
-                //    {
-
-                //        this.UIAPIRawForm.DataSources.UserDataSources.Item("udArquivo").Value = string.Empty;
-                //        this.UIAPIRawForm.DataSources.UserDataSources.Item("udArquivo").Value = string.Join(";", openFileDialog.FileNames);
-                //    }
-                //});
-
-                //t.IsBackground = false;
-                //t.SetApartmentState(ApartmentState.STA);
-                //t.Start();
-
             }
             catch (Exception ex)
             {
@@ -347,7 +314,6 @@ namespace BOneSolucoes.Forms.ImportacaoXML
             }
 
         }
-
         private class WindowWrapper : IWin32Window
         {
             private IntPtr _handle;
@@ -560,7 +526,7 @@ namespace BOneSolucoes.Forms.ImportacaoXML
                     }
 
                     var docEntry = Program.oCompany.GetNewObjectKey();
-                    Application.SBO_Application.MessageBox($"Pedido de compra gerado com sucesso: Nº:{docEntry} ", 1, "Ok", "Cancelar");
+                    Application.SBO_Application.MessageBox($"Recebimento de Mercadoria gerado com sucesso: Nº:{docEntry} ", 1, "Ok", "Cancelar");
 
                 }
                 catch (Exception ex)

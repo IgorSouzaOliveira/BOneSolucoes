@@ -82,13 +82,32 @@ namespace BOneSolucoes.Forms.Configuração
         }
         private void Button2_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
+            SAPbobsCOM.Recordset oRst = (SAPbobsCOM.Recordset)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+           
+
             try
             {
                 this.UIAPIRawForm.Freeze(true);
+
+                if (mtxConf.RowCount > 0)
+                {
+                    mtxConf.AddRow();
+                    ((SAPbouiCOM.EditText)mtxConf.Columns.Item("#").Cells.Item(mtxConf.RowCount).Specific).String = (mtxConf.RowCount).ToString();
+                    mtxConf.ClearRowData(mtxConf.RowCount);
+                }
+                else
+                {
+                    mtxConf.AddRow();
+                    ((SAPbouiCOM.EditText)mtxConf.Columns.Item("#").Cells.Item(mtxConf.RowCount).Specific).String = (mtxConf.RowCount).ToString();
+                }
                  
-                mtxConf.AddRow();
-                ((SAPbouiCOM.EditText)mtxConf.Columns.Item("#").Cells.Item(mtxConf.RowCount).Specific).String = (mtxConf.RowCount).ToString();
-                mtxConf.ClearRowData(mtxConf.RowCount);
+                
+                
+
+                if (this.UIAPIRawForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
+                {
+                    this.UIAPIRawForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
+                }
 
             }
             catch (Exception ex)

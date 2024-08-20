@@ -46,6 +46,15 @@
 				</Menus>
 			</Menu>
 		</action>
+		<action type="add">
+			<Menu Checked="0" Enabled="1" FatherUID="mnu_mainmenu" Position="6" String="Ordem de Produção" Type="2" UniqueID="mnuOP" image="">
+				<Menus>
+					<action type="add">
+						<Menu Checked="0" Enabled="1" FatherUID="mnuOPBone" Position="1" String="Ordem de Produção BOne" Type="1" UniqueID="mnuOPBone" />
+					</action>
+				</Menus>
+			</Menu>
+		</action>
 	</Menus>
 </Application>
 

@@ -1,4 +1,3 @@
-C:\Users\SAPB1DEV\Desktop\_source\BOneSolucoes\BOneSoluções\obj\x64\Debug\BOneSolucoes.csproj.AssemblyReference.cache
 C:\Users\SAPB1DEV\Desktop\_source\BOneSolucoes\BOneSoluções\obj\x64\Debug\BOneSolucoes.Resources.Resource.resources
 C:\Users\SAPB1DEV\Desktop\_source\BOneSolucoes\BOneSoluções\obj\x64\Debug\BOneSolucoes.csproj.GenerateResource.cache
 C:\Users\SAPB1DEV\Desktop\_source\BOneSolucoes\BOneSoluções\obj\x64\Debug\BOneSolucoes.csproj.CoreCompileInputs.cache

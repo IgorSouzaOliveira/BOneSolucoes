@@ -53,6 +53,7 @@ namespace BOneSolucoes.Forms
             this.EditText1 = ((SAPbouiCOM.EditText)(this.GetItem("edPass").Specific));
             this.StaticText2 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_9").Specific));
             this.cFechaDoc = ((SAPbouiCOM.CheckBox)(this.GetItem("cFechaDoc").Specific));
+            this.Folder2 = ((SAPbouiCOM.Folder)(this.GetItem("fIndu").Specific));
             this.OnCustomInitialize();
 
         }
@@ -181,6 +182,6 @@ namespace BOneSolucoes.Forms
             }
         }
 
-        
+        private SAPbouiCOM.Folder Folder2;
     }
 }
