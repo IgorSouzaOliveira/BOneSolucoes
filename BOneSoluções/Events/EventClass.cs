@@ -35,7 +35,7 @@ namespace BOneSolucoes.Entities
 
                     oItem1.Left = oItem.Left + 70;
 
-                    oItem1.Width = oItem.Width + 10;
+                    oItem1.Width = oItem.Width + 30;
 
                     oItem1.Height = oItem.Height;
 
@@ -43,7 +43,7 @@ namespace BOneSolucoes.Entities
 
                     oButton = (SAPbouiCOM.Button)oItem1.Specific;
 
-                    oButton.Caption = "Teste";
+                    oButton.Caption = "Custo do momento.";
 
                     Application.SBO_Application.ItemEvent += EventoClick;
 
@@ -61,24 +61,42 @@ namespace BOneSolucoes.Entities
         {
             BubbleEvent = true;
 
-            if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED && pVal.ItemUID == "btnExec" && pVal.FormType == 139 && pVal.BeforeAction == true)
+            try
             {
+                SAPbobsCOM.Recordset oRst = (SAPbobsCOM.Recordset)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
 
-                SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.GetForm("139", pVal.FormTypeCount);
-
-                String cardCode = ((SAPbouiCOM.EditText)oForm.Items.Item("4").Specific).String;
-                SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)oForm.Items.Item("38").Specific;
-
-               
-                String itemCode = string.Empty;
-
-                for (int i = 1; i <= oMatrix.RowCount; i++)
+                if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED && pVal.ItemUID == "btnExec" && pVal.FormType == 139 && pVal.BeforeAction == true)
                 {
-                    itemCode = ((SAPbouiCOM.EditText)oMatrix.Columns.Item("1").Cells.Item(i).Specific).String;
-                }
 
-                
-                Application.SBO_Application.MessageBox($"Cliente: {cardCode} - Item: {itemCode}", 1, "Ok", "Cancelar");
+                    SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.GetForm("139", pVal.FormTypeCount);
+                    SAPbouiCOM.Item oStatus = oForm.Items.Item("81");
+                    SAPbouiCOM.Item oCondPagamento = oForm.Items.Item("47");
+
+                    if (((SAPbouiCOM.ComboBox)oStatus.Specific).Value == "3")
+                        throw new Exception("Erro: Documento com status Fechado. Atualização não disponivel.");
+
+                    String cardCode = ((SAPbouiCOM.EditText)oForm.Items.Item("4").Specific).String;
+                    SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)oForm.Items.Item("38").Specific;
+
+
+                    String usage = string.Empty;
+
+                    for (int i = 1; i <= oMatrix.RowCount; i++)
+                    {
+                        usage = ((SAPbouiCOM.ComboBox)oMatrix.Columns.Item("2011").Cells.Item(i).Specific).Value;
+                        oRst.DoQuery($"SELECT T0.Price FROM ITM1 T0 WHERE T0.PriceList = 2 AND T0.ItemCode = '{((SAPbouiCOM.EditText)oMatrix.Columns.Item("1").Cells.Item(i).Specific).Value}'");
+
+                        if (usage == "10")
+                        {
+                            ((SAPbouiCOM.EditText)oMatrix.Columns.Item("14").Cells.Item(i).Specific).Value = oRst.Fields.Item("Price").Value.ToString();
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(ex.Message,SAPbouiCOM.BoMessageTime.bmt_Short,SAPbouiCOM.BoStatusBarMessageType.smt_Error);
                 BubbleEvent = false;
             }
         }
@@ -136,7 +154,7 @@ namespace BOneSolucoes.Entities
                 }
             }
         }
-        
+
         /* Metodo para modificar o status do Documento*/
         public static void ModelAprov(string pvalType, string objectKey, string query, int codeEtapa, string nameEtapa, string modeloAut)
         {
