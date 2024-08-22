@@ -47,6 +47,8 @@ namespace BOneSolucoes
         {
             BubbleEvent = true;
 
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.ActiveForm;
+
             try
             {
                 if (pVal.BeforeAction && pVal.MenuUID == "mnu_mnuParam")
@@ -82,6 +84,11 @@ namespace BOneSolucoes
                 {
                     formOP formOP = new formOP();
                     formOP.Show();
+                }
+
+                if (pVal.BeforeAction && pVal.MenuUID == "formListAprov" && oForm.TypeEx == "139")
+                {
+                    Application.SBO_Application.MessageBox("Desenvolver para esse Menu.", 1, "ok", "");
                 }
             }
             catch (Exception ex)

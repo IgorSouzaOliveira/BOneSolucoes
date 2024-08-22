@@ -80,7 +80,7 @@ namespace BOneSolucoes.Forms
                 if (oTable.GetByKey("1"))
                 {
                     this.UIAPIRawForm.DataSources.UserDataSources.Item("udCheck01").ValueEx = (string)oTable.UserFields.Fields.Item("U_BOne_AtivoAprov").Value;
-                    this.UIAPIRawForm.DataSources.UserDataSources.Item("udFechaDoc").ValueEx = (string)oTable.UserFields.Fields.Item("U_FechaDocumento").Value;
+                    //this.UIAPIRawForm.DataSources.UserDataSources.Item("udFechaDoc").ValueEx = (string)oTable.UserFields.Fields.Item("U_FechaDocumento").Value;
                     this.UIAPIRawForm.DataSources.UserDataSources.Item("udUrl").Value = oTable.UserFields.Fields.Item("U_UrlSL").Value.ToString();
                     this.UIAPIRawForm.DataSources.UserDataSources.Item("udPorta").Value = oTable.UserFields.Fields.Item("U_PortaSL").Value.ToString();
                     this.UIAPIRawForm.DataSources.UserDataSources.Item("udServidor").Value = oTable.UserFields.Fields.Item("U_ServidorSL").Value.ToString();
@@ -134,7 +134,7 @@ namespace BOneSolucoes.Forms
                     oTable.Code = "1";
                     oTable.Name = "1";
                     oTable.UserFields.Fields.Item("U_BOne_AtivoAprov").Value = CheckBox0.Checked ? "Y" : "N";
-                    oTable.UserFields.Fields.Item("U_FechaDocumento").Value = cFechaDoc.Checked ? "Y" : "N";
+                    //oTable.UserFields.Fields.Item("U_FechaDocumento").Value = cFechaDoc.Checked ? "Y" : "N";
                     oTable.UserFields.Fields.Item("U_UrlSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udUrl").Value;
                     oTable.UserFields.Fields.Item("U_PortaSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udPorta").Value;
                     oTable.UserFields.Fields.Item("U_ServidorSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udServidor").Value;
@@ -153,7 +153,7 @@ namespace BOneSolucoes.Forms
                     oTable.Code = "1";
                     oTable.Name = "1";
                     oTable.UserFields.Fields.Item("U_BOne_AtivoAprov").Value = CheckBox0.Checked ? "Y" : "N";
-                    oTable.UserFields.Fields.Item("U_FechaDocumento").Value = cFechaDoc.Checked ? "Y" : "N";
+                    //oTable.UserFields.Fields.Item("U_FechaDocumento").Value = cFechaDoc.Checked ? "Y" : "N";
                     oTable.UserFields.Fields.Item("U_UrlSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udUrl").Value;
                     oTable.UserFields.Fields.Item("U_PortaSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udPorta").Value;
                     oTable.UserFields.Fields.Item("U_ServidorSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udServidor").Value;

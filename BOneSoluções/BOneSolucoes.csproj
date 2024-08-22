@@ -76,6 +76,7 @@
     <Compile Include="Common\SAPCommon.cs" />
     <Compile Include="Events\EventClass.cs" />
     <Compile Include="Events\MenuEvent.cs" />
+    <Compile Include="Events\RigthClickEvent.cs" />
     <Compile Include="Forms\AprovaçãoDocumento\formAprov.b1f.cs">
       <DependentUpon>formAprov.b1f</DependentUpon>
     </Compile>

@@ -1,5 +1,6 @@
 ﻿using BOneSolucoes.Comonn;
 using BOneSolucoes.Entities;
+using BOneSolucoes.Events;
 using SAPbouiCOM.Framework;
 using System;
 using System.Collections.Generic;
@@ -47,6 +48,7 @@ namespace BOneSolucoes
                 
                 Application.SBO_Application.ItemEvent += EventClass.SBO_Application_ItemEvent;                
                 Application.SBO_Application.FormDataEvent += EventClass.GetDocEntryPed;
+                Application.SBO_Application.RightClickEvent += RigthClickEvent.SBO_Application_RigthClickEvent;
 
                 oApp.RegisterMenuEventHandler(MyMenu.SBO_Application_MenuEvent);
                 Application.SBO_Application.AppEvent += new SAPbouiCOM._IApplicationEvents_AppEventEventHandler(SBO_Application_AppEvent);
@@ -57,6 +59,8 @@ namespace BOneSolucoes
                 System.Windows.Forms.MessageBox.Show(ex.Message);
             }
         }
+
+    
 
         static void SBO_Application_AppEvent(SAPbouiCOM.BoAppEventTypes EventType)
         {
