@@ -66,6 +66,8 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
         {
             try
             {
+                this.UIAPIRawForm.EnableMenu("1281", false);
+                this.UIAPIRawForm.EnableMenu("1282", false);
                 LoadMatrix();
                 LoadGrupo();
 

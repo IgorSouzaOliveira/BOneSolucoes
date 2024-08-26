@@ -70,6 +70,9 @@ namespace BOneSolucoes.Forms.Compras
 
         private void OnCustomInitialize()
         {
+            this.UIAPIRawForm.EnableMenu("1281",false);
+            this.UIAPIRawForm.EnableMenu("1282", false);
+
             LoadVendComp();
             LoadFilial();
             LoadMatrix();

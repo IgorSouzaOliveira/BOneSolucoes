@@ -65,6 +65,8 @@ namespace BOneSolucoes.Forms.ImportacaoXML
         }
         private void OnCustomInitialize()
         {
+            this.UIAPIRawForm.EnableMenu("1281", false);
+            this.UIAPIRawForm.EnableMenu("1282", false);
             Utilizacao();
             Filial();
             mtxImpo.AutoResizeColumns();

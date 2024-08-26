@@ -84,6 +84,8 @@ namespace BOneSolucoes.Forms.Vendas
 
         private void OnCustomInitialize()
         {
+            this.UIAPIRawForm.EnableMenu("1281", false);
+            this.UIAPIRawForm.EnableMenu("1282", false);
             LoadMatrix();
             Vendedor();
             Filial();

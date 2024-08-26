@@ -15,13 +15,9 @@ namespace BOneSolucoes.Forms.Ordem_de_Produção_BOne
         private SAPbouiCOM.Button Button3;
 
         public formOP()
-        {
-            Application.SBO_Application.MenuEvent += SBO_Application_MenuEvent;
+        {            
 
         }
-
-
-
 
         /// <summary>
         /// Initialize components. Called by framework after form created.
@@ -42,7 +38,6 @@ namespace BOneSolucoes.Forms.Ordem_de_Produção_BOne
             this.StaticText1 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_1").Specific));
             this.ComboBox0 = ((SAPbouiCOM.ComboBox)(this.GetItem("cbxFilial").Specific));
             this.OnCustomInitialize();
-
         }
 
         /// <summary>
@@ -56,67 +51,14 @@ namespace BOneSolucoes.Forms.Ordem_de_Produção_BOne
 
         private void OnCustomInitialize()
         {
-            mtxOrdemP.AutoResizeColumns();
-
+            mtxOrdemP.AutoResizeColumns();  
         }
 
         private SAPbouiCOM.Button Button0;
         private SAPbouiCOM.Button Button1;
         private SAPbouiCOM.Button Button2;
         private SAPbouiCOM.StaticText StaticText1;
-        private SAPbouiCOM.ComboBox ComboBox0;          
-     
-
-        private void SBO_Application_MenuEvent(ref SAPbouiCOM.MenuEvent pVal, out bool BubbleEvent)
-        {
-            BubbleEvent = true;
-
-            SAPbobsCOM.Recordset oRst = (SAPbobsCOM.Recordset)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-
-            try
-            {
-                switch (pVal.MenuUID)
-                {
-                    case "1282":
-                        if (pVal.BeforeAction == false && this.UIAPIRawForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE)
-                        {
-
-                            oRst.DoQuery("SELECT COUNT('A') FROM [@BONEOPT]");
-                            var code = oRst.Fields.Item(0).Value;
-
-                            if (Convert.ToInt32(code) == 0)
-                            {
-                                oRst.DoQuery("SELECT CAST((ISNULL(MAX(CAST([CODE] AS NUMERIC)),0) + 1) AS NVARCHAR(MAX)) FROM [@BONEOPT]");
-                                string NextSerial = oRst.Fields.Item(0).Value.ToString();
-                                this.UIAPIRawForm.DataSources.DBDataSources.Item("@BONEOPT").SetValue("Code", 0, NextSerial.ToString());
-                                this.UIAPIRawForm.DataSources.DBDataSources.Item("@BONEOPT").SetValue("DocEntry", 0, NextSerial.ToString());
-                            }
-                            else
-                            {
-                                oRst.DoQuery("SELECT CAST((ISNULL(MAX(CAST([CODE] AS NUMERIC)),0) + 1) AS NVARCHAR(MAX)) FROM [@BONEOPT]");
-                                string NextSerial = oRst.Fields.Item(0).Value.ToString();
-                                this.UIAPIRawForm.DataSources.DBDataSources.Item("@BONEOPT").SetValue("Code", 0, NextSerial.ToString());
-                                this.UIAPIRawForm.DataSources.DBDataSources.Item("@BONEOPT").SetValue("DocEntry", 0, NextSerial.ToString());
-                            }
-
-                            this.UIAPIRawForm.Items.Item("colCode").Enabled = false;
-                        }
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                Application.SBO_Application.MessageBox(ex.Message, 1, "Ok", "Cancelar");
-            }
-            finally
-            {
-                if (oRst != null)
-                {
-                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oRst);
-                }
-            }
-
-        }
+        private SAPbouiCOM.ComboBox ComboBox0;     
         private void Button2_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
             try
@@ -240,7 +182,7 @@ namespace BOneSolucoes.Forms.Ordem_de_Produção_BOne
             BubbleEvent = true;
             try
             {
-                ValidaNull();   
+                ValidaNull();
             }
             catch (Exception ex)
             {
@@ -248,7 +190,7 @@ namespace BOneSolucoes.Forms.Ordem_de_Produção_BOne
                 BubbleEvent = false;
             }
 
-        }      
+        }
         private void ValidaNull()
         {
             for (int i = 1; i <= mtxOrdemP.RowCount; i++)
@@ -258,12 +200,12 @@ namespace BOneSolucoes.Forms.Ordem_de_Produção_BOne
                 var eDeposito = ((SAPbouiCOM.EditText)mtxOrdemP.Columns.Item("colDep").Cells.Item(i).Specific).Value;
 
                 if (string.IsNullOrEmpty(itemCode))
-                {                   
+                {
                     throw new Exception($"BOne - Campo: Código do Item em Branco. Linha: {i.ToString()}");
                 }
 
                 if (string.IsNullOrEmpty(itemName))
-                {                  
+                {
                     throw new Exception($"BOne - Campo: Descrição do Item em Branco. Linha: {i.ToString()}");
                 }
 
@@ -273,7 +215,7 @@ namespace BOneSolucoes.Forms.Ordem_de_Produção_BOne
                 }
             }
 
-            
+
         }
 
     }

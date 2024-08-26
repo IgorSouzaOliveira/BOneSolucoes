@@ -44,11 +44,11 @@ namespace BOneSolucoes
                 Application.SBO_Application.SetStatusBarMessage("Add-on BOne Soluções conectado com sucesso", SAPbouiCOM.BoMessageTime.bmt_Short, false);
 
                 MyMenu.CreateMenu();
-
                 
                 Application.SBO_Application.ItemEvent += EventClass.SBO_Application_ItemEvent;                
                 Application.SBO_Application.FormDataEvent += EventClass.GetDocEntryPed;
                 Application.SBO_Application.RightClickEvent += RigthClickEvent.SBO_Application_RigthClickEvent;
+                Application.SBO_Application.MenuEvent += MenuEvent.SBO_Application_MenuEvent;
 
                 oApp.RegisterMenuEventHandler(MyMenu.SBO_Application_MenuEvent);
                 Application.SBO_Application.AppEvent += new SAPbouiCOM._IApplicationEvents_AppEventEventHandler(SBO_Application_AppEvent);

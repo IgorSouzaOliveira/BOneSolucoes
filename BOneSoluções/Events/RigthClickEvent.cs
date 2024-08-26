@@ -52,9 +52,7 @@ namespace BOneSolucoes.Events
                 BubbleEvent = false;
             }
             finally
-            {
-                
-
+            {      
                 if (oForm != null)
                 {
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(oForm);
