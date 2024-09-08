@@ -131,45 +131,14 @@ namespace BOneSolucoes.Forms
 
             try
             {
-                if (!oTable.GetByKey("1"))
+                Boolean existsCode = oTable.GetByKey("1");
+                SetUserTableValues(oTable);
+                int result = existsCode ? oTable.Update() : oTable.Add();
+
+                if (result != 0)
                 {
-                    oTable.Code = "1";
-                    oTable.Name = "1";
-                    oTable.UserFields.Fields.Item("U_BOne_AtivoAprov").Value = CheckBox0.Checked ? "Y" : "N";
-                    //oTable.UserFields.Fields.Item("U_FechaDocumento").Value = cFechaDoc.Checked ? "Y" : "N";
-                    oTable.UserFields.Fields.Item("U_UrlSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udUrl").Value;
-                    oTable.UserFields.Fields.Item("U_PortaSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udPorta").Value;
-                    oTable.UserFields.Fields.Item("U_ServidorSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udServidor").Value;
-                    oTable.UserFields.Fields.Item("U_UsuarioSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udUser").Value;
-                    oTable.UserFields.Fields.Item("U_SenhaSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udPass").Value;
-
-                    Int32 lRetA = oTable.Add();
-
-                    if (lRetA != 0)
-                    {
-                        throw new Exception(Program.oCompany.GetLastErrorDescription());
-                    }
+                    throw new Exception(Program.oCompany.GetLastErrorDescription());
                 }
-                else
-                {
-                    oTable.Code = "1";
-                    oTable.Name = "1";
-                    oTable.UserFields.Fields.Item("U_BOne_AtivoAprov").Value = CheckBox0.Checked ? "Y" : "N";
-                    //oTable.UserFields.Fields.Item("U_FechaDocumento").Value = cFechaDoc.Checked ? "Y" : "N";
-                    oTable.UserFields.Fields.Item("U_UrlSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udUrl").Value;
-                    oTable.UserFields.Fields.Item("U_PortaSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udPorta").Value;
-                    oTable.UserFields.Fields.Item("U_ServidorSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udServidor").Value;
-                    oTable.UserFields.Fields.Item("U_UsuarioSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udUser").Value;
-                    oTable.UserFields.Fields.Item("U_SenhaSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udPass").Value;
-
-                    Int32 lRetU = oTable.Update();
-
-                    if (lRetU != 0)
-                    {
-                        throw new Exception(Program.oCompany.GetLastErrorDescription());
-                    }
-                }
-
             }
             catch (Exception ex)
             {
@@ -182,6 +151,19 @@ namespace BOneSolucoes.Forms
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(oTable);
                 }
             }
+        }
+
+        void SetUserTableValues(SAPbobsCOM.UserTable userTable)
+        {
+            userTable.Code = "1";
+            userTable.Name = "1";
+            userTable.UserFields.Fields.Item("U_BOne_AtivoAprov").Value = CheckBox0.Checked ? "Y" : "N";
+            //oTable.UserFields.Fields.Item("U_FechaDocumento").Value = cFechaDoc.Checked ? "Y" : "N";
+            userTable.UserFields.Fields.Item("U_UrlSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udUrl").Value;
+            userTable.UserFields.Fields.Item("U_PortaSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udPorta").Value;
+            userTable.UserFields.Fields.Item("U_ServidorSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udServidor").Value;
+            userTable.UserFields.Fields.Item("U_UsuarioSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udUser").Value;
+            userTable.UserFields.Fields.Item("U_SenhaSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udPass").Value;
         }
 
         private SAPbouiCOM.Folder Folder2;
