@@ -22,8 +22,7 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
         private SAPbouiCOM.OptionBtn radCliente, radForn;
         private SAPbouiCOM.EditText EditText0;
         private SAPbouiCOM.StaticText StaticText0;
-
-        BusinessPartnerModel partners = new BusinessPartnerModel();
+        private BusinessPartnerModel PartnerModel { get; set; } = new BusinessPartnerModel();
 
         public formPDN()
         {
@@ -168,8 +167,7 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
             var cardCode = oDataTable.GetValue("CardCode", 0).ToString();
             this.UIAPIRawForm.DataSources.UserDataSources.Item("udCardCode").Value = cardCode;
 
-        }            
-
+        }
         private void oFilter_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
             try
@@ -213,30 +211,26 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
 
                 mtxData.FlushToDataSource();
 
-                List<String> selectedBP = new List<string>();
-
+                oProgressBar = Application.SBO_Application.StatusBar.CreateProgressBar("", oDT.Rows.Count, false);
                 for (int i = 0; i < oDT.Rows.Count; i++)
                 {
                     var selected = oDT.GetValue("Checked", i).ToString();
 
                     if (selected == "Y")
                     {
-                        selectedBP.Add(oDT.GetValue("CardCode", i).ToString());
+                        PartnerModel.CardCode = oDT.GetValue("CardCode", i).ToString();
+                        PartnerModel.Valid = "tYES";
+                        PartnerModel.Frozen = "tNO";
+
+                        string result = SAPCommon.UpdateBP(PartnerModel);
+
+                        if (result == "Sucesso")
+                            oProgressBar.Text = $"Parceiro de négocios: {PartnerModel.CardCode}, atualizado com sucesso.";
+                            oProgressBar.Value++;
+
                     }
                 }
-                oProgressBar = Application.SBO_Application.StatusBar.CreateProgressBar("", selectedBP.Count, false);
-                foreach (string oBP in selectedBP)
-                {
-                    partners.CardCode = oBP;
-                    partners.Valid = "tYES";
-                    partners.Frozen = "tNO";
 
-                    string result = SAPCommon.UpdateBP(partners);
-
-                    if (result == "Sucesso")
-                        oProgressBar.Text = $"Parceiro de négocios: {partners.CardCode}, atualizado com sucesso.";
-                    oProgressBar.Value++;
-                }
             }
             catch (Exception ex)
             {
@@ -253,6 +247,8 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
                 {
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(oProgressBar);
                 }
+
+                LoadMatrix();
 
             }
 
@@ -270,7 +266,7 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
 
                 mtxData.FlushToDataSource();
 
-                List<String> selectedBP = new List<string>();
+                oProgressBar = Application.SBO_Application.StatusBar.CreateProgressBar("", oDT.Rows.Count, false);
 
                 for (int i = 0; i < oDT.Rows.Count; i++)
                 {
@@ -278,23 +274,17 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
 
                     if (selected == "Y")
                     {
-                        selectedBP.Add(oDT.GetValue("CardCode", i).ToString());
-                    }
-                }
+                        PartnerModel.CardCode = oDT.GetValue("CardCode", i).ToString();
+                        PartnerModel.Valid = "tNO";
+                        PartnerModel.Frozen = "tYES";
 
-                oProgressBar = Application.SBO_Application.StatusBar.CreateProgressBar("", selectedBP.Count, false);
-                foreach (String oBP in selectedBP)
-                {
-                    partners.CardCode = oBP;
-                    partners.Valid = "tNO";
-                    partners.Frozen = "tYES";
+                        var result = SAPCommon.UpdateBP(PartnerModel);
 
-                    var result = SAPCommon.UpdateBP(partners);
-
-                    if (result == "Sucesso")
-                        oProgressBar.Text = $"Parceiro de négocios: {partners.CardCode}, atualizado com sucesso.";
+                        if (result == "Sucesso")
+                            oProgressBar.Text = $"Parceiro de négocios: {PartnerModel.CardCode}, atualizado com sucesso.";
                         oProgressBar.Value++;
 
+                    }
                 }
             }
             catch (Exception ex)
@@ -311,11 +301,8 @@ namespace BOneSolucoes.Forms.ParceiroDeNegocios
                 {
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(oProgressBar);
                 }
-
+                LoadMatrix();
             }
-
         }
-
-        
     }
 }

@@ -13,6 +13,11 @@ namespace BOneSolucoes.Forms.Ordem_de_Produção_BOne
         private SAPbouiCOM.StaticText StaticText0;
         private SAPbouiCOM.EditText colCode;
         private SAPbouiCOM.Button Button3;
+        private SAPbouiCOM.Button Button0;
+        private SAPbouiCOM.Button Button1;
+        private SAPbouiCOM.Button Button2;
+        private SAPbouiCOM.StaticText StaticText1;
+        private SAPbouiCOM.ComboBox ComboBox0;
 
         public formOP()
         {            
@@ -47,18 +52,10 @@ namespace BOneSolucoes.Forms.Ordem_de_Produção_BOne
         {
 
         }
-
-
         private void OnCustomInitialize()
         {
             mtxOrdemP.AutoResizeColumns();  
-        }
-
-        private SAPbouiCOM.Button Button0;
-        private SAPbouiCOM.Button Button1;
-        private SAPbouiCOM.Button Button2;
-        private SAPbouiCOM.StaticText StaticText1;
-        private SAPbouiCOM.ComboBox ComboBox0;     
+        }         
         private void Button2_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
             try
@@ -158,8 +155,6 @@ namespace BOneSolucoes.Forms.Ordem_de_Produção_BOne
                     String qDeposito = oDataTable.GetValue("WhsCode", 0).ToString();
                     this.UIAPIRawForm.DataSources.DBDataSources.Item("@BONEOPTL").SetValue("U_Deposito", pVal.Row - 1, qDeposito);
                 }
-
-
 
                 if (this.UIAPIRawForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
                 {

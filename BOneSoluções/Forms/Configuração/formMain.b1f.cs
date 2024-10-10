@@ -82,7 +82,7 @@ namespace BOneSolucoes.Forms
                 if (oTable.GetByKey("1"))
                 {
                     this.UIAPIRawForm.DataSources.UserDataSources.Item("udCheck01").ValueEx = (string)oTable.UserFields.Fields.Item("U_BOne_AtivoAprov").Value;
-                    //this.UIAPIRawForm.DataSources.UserDataSources.Item("udFechaDoc").ValueEx = (string)oTable.UserFields.Fields.Item("U_FechaDocumento").Value;
+                    this.UIAPIRawForm.DataSources.UserDataSources.Item("udFechaDoc").ValueEx = (string)oTable.UserFields.Fields.Item("U_FechaDocRecusa").Value;
                     this.UIAPIRawForm.DataSources.UserDataSources.Item("udUrl").Value = oTable.UserFields.Fields.Item("U_UrlSL").Value.ToString();
                     this.UIAPIRawForm.DataSources.UserDataSources.Item("udPorta").Value = oTable.UserFields.Fields.Item("U_PortaSL").Value.ToString();
                     this.UIAPIRawForm.DataSources.UserDataSources.Item("udServidor").Value = oTable.UserFields.Fields.Item("U_ServidorSL").Value.ToString();
@@ -152,13 +152,12 @@ namespace BOneSolucoes.Forms
                 }
             }
         }
-
         void SetUserTableValues(SAPbobsCOM.UserTable userTable)
         {
             userTable.Code = "1";
             userTable.Name = "1";
             userTable.UserFields.Fields.Item("U_BOne_AtivoAprov").Value = CheckBox0.Checked ? "Y" : "N";
-            //oTable.UserFields.Fields.Item("U_FechaDocumento").Value = cFechaDoc.Checked ? "Y" : "N";
+            userTable.UserFields.Fields.Item("U_FechaDocRecusa").Value = cFechaDoc.Checked ? "Y" : "N";
             userTable.UserFields.Fields.Item("U_UrlSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udUrl").Value;
             userTable.UserFields.Fields.Item("U_PortaSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udPorta").Value;
             userTable.UserFields.Fields.Item("U_ServidorSL").Value = this.UIAPIRawForm.DataSources.UserDataSources.Item("udServidor").Value;

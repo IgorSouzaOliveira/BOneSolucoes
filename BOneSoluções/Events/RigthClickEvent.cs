@@ -9,9 +9,6 @@ namespace BOneSolucoes.Events
 {
     class RigthClickEvent
     {
-
-         
-
         public static void SBO_Application_RigthClickEvent(ref SAPbouiCOM.ContextMenuInfo pVal, out bool BubbleEvent)
         {
             BubbleEvent = true;

@@ -435,11 +435,12 @@ namespace BOneSolucoes.Forms.Compras
                             {
                                 throw new Exception(Program.oCompany.GetLastErrorDescription());
                             }
+
+                            ValidaDocRecusa(docEntry,tipoDoc);
                         }
 
                         break;
                 }
-
 
                 Application.SBO_Application.StatusBar.SetText("Processo finalizado com sucesso", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
 
@@ -463,6 +464,63 @@ namespace BOneSolucoes.Forms.Compras
                 LoadMatrix();
             }
         }
+        private void ValidaDocRecusa(int docEntry, string tipoDoc)
+        {
+            SAPbobsCOM.Recordset oRst = (SAPbobsCOM.Recordset)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+            SAPbobsCOM.Documents oDoc = null;
 
+            try
+            {
+                oRst.DoQuery(@"SELECT U_FechaDocRecusa FROM [@BONECONFMAIN]");
+                oRst.MoveFirst();
+
+                var result = oRst.Fields.Item("U_FechaDocRecusa").Value.ToString();
+
+                if (result == "N")
+                    return;
+
+                switch (tipoDoc)
+                {
+                    case "17":
+                        oDoc = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oOrders);
+                        break;
+                    case "22":
+                        oDoc = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseOrders);
+                        break;
+                    case "540000006":
+                        oDoc = (SAPbobsCOM.Documents)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseQuotations);
+                        break;
+                }
+
+                oDoc.GetByKey(docEntry);
+
+                int lRet = oDoc.Close();
+
+                if (lRet != 0)
+                {
+                    throw new Exception(Program.oCompany.GetLastErrorDescription());
+                }
+
+                Application.SBO_Application.StatusBar.SetText($"Documento Nº: {docEntry}, fechado após recusa.", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+
+
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(ex.Message,SAPbouiCOM.BoMessageTime.bmt_Short,SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+            finally
+            {
+                if (oRst != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oRst);
+                }
+
+                if (oDoc != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oDoc);
+                }
+            }
+        }
     }
 }
